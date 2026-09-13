@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]) {
     curl_global_init(CURL_GLOBAL_ALL);
 
-    StreamClient client("http://10.175.84.169/stream");
+    StreamClient client("http://10.239.35.169/stream");
     client.start();
 
     auto app = Gtk::Application::create();
