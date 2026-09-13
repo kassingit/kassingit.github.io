@@ -3,7 +3,7 @@ GTKMM_LD := $(shell pkg-config gtkmm-4.0 --libs)
 CURL_CF  := $(shell pkg-config libcurl --cflags)
 CURL_LD  := $(shell pkg-config libcurl --libs)
 
-ONNXRUNTIME_DIR := /home/kelly/Bureau/Personnal_Projects/ESP32_Monitor/onnxruntime-linux-x64-1.23.0
+ONNXRUNTIME_DIR := /home/kelly/Bureau/kassingit.github.io/PROJET_2/ESP32_Monitor/onnxruntime-linux-x64-1.23.0
 ONNX_CF := -I$(ONNXRUNTIME_DIR)/include
 ONNX_LD := -L$(ONNXRUNTIME_DIR)/lib -lonnxruntime -Wl,-rpath,$(ONNXRUNTIME_DIR)/lib
 

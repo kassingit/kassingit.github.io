@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include </home/kelly/Bureau/Personnal_Projects/ESP32_Monitor/onnxruntime-linux-x64-1.23.0/include/onnxruntime_cxx_api.h>
+#include </home/kelly/Bureau/kassingit.github.io/PROJET_2/ESP32_Monitor/onnxruntime-linux-x64-1.23.0/include/onnxruntime_cxx_api.h>
 
 struct Detection {
     float x1, y1, x2, y2;

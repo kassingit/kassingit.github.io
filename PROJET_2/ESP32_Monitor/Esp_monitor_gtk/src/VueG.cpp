@@ -454,7 +454,7 @@ void VueG::loadConfig() {
         }
     }
 
-    saveDirectory = Glib::get_home_dir() + "/Bureau/Personnal_Projects/ESP32_Monitor/Esp_monitor_gtk/Pictures";
+    saveDirectory = Glib::get_home_dir() + "/Bureau/kassingit.github.io/PROJET_2/ESP32_Monitor/Esp_monitor_gtk/Pictures";
     if (!fs::exists(saveDirectory)) {
         fs::create_directory(saveDirectory);
     }
