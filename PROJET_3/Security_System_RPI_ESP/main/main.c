@@ -18,7 +18,7 @@ static const char *KEYPAD_TAG = "[ KEYPAD ]:";
 #define ROW4_GPIO GPIO_NUM_32
 
 // GPIO des colonnes (entrées avec pull-up)
-#define COL1_GPIO GPIO_NUM_26
+#define COL1_GPIO GPIO_NUM_0
 #define COL2_GPIO GPIO_NUM_5
 #define COL3_GPIO GPIO_NUM_18
 #define COL4_GPIO GPIO_NUM_19
