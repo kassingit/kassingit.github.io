@@ -8,7 +8,8 @@
 #include <driver/i2c_master.h>
 #include <esp_log.h>
 #include "esp_rom_sys.h"
-
+#include "nvs_flash.h"           // pour nvs_flash_init(), nvs_flash_erase()
+#include "nimble/nimble_port.h"  // pour nimble_port_init()
 
 //============================ KEYPAD ZONE =========================================
 
@@ -207,6 +208,12 @@ void keypad_task(void *pvParameterS){
     }
 }
 
+
+//========================================== BLE 
+
+
+
+//=========================================== MAIN 
 void app_main(void){
     ESP_ERROR_CHECK(i2c_master_init());
     addressScan();
