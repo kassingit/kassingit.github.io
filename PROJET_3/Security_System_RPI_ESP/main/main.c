@@ -1,4 +1,6 @@
 //==== source ~/.espressif/tools/activate_idf_v6.1.sh
+//==== idf.py menuconfig
+//==== Build: idf.py build
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "driver/gpio.h"
