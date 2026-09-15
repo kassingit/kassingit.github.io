@@ -10,6 +10,8 @@
 #include "esp_rom_sys.h"
 #include "nvs_flash.h"           // pour nvs_flash_init(), nvs_flash_erase()
 #include "nimble/nimble_port.h"  // pour nimble_port_init()
+#include "nimble/nimble_port_freertos.h"  // pour nimble_port_freertos_init() et _deinit()
+#include "host/ble_hs.h"                   // pour ble_hs_cfg
 
 //============================ KEYPAD ZONE =========================================
 
@@ -210,8 +212,16 @@ void keypad_task(void *pvParameterS){
 
 
 //========================================== BLE 
+static const char* BLE_TAG = "[ BLE ]:";
 
+void ble_app_on_sync(void){
+    ESP_LOGI(BLE_TAG,"Stack NimBLE synchronisée, prête à démarrer");
+}
 
+void ble_host_task(void *param){
+    nimble_port_run(); //   cette fonction de retourne jamais tant que nimble tourne
+    nimble_port_freertos_deinit();    
+}
 
 
 //=========================================== MAIN 
@@ -240,7 +250,7 @@ void app_main(void){
     }
     xTaskCreate(keypad_task,"KEYPAD_TASK",2048,NULL,5,NULL);
 
-    //========= BLE
+    //========= BLE    
     esp_err_t ret = nvs_flash_init();
     if(ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND){
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -249,4 +259,7 @@ void app_main(void){
 
     ESP_ERROR_CHECK(ret);
     nimble_port_init(); // démarre les structures internes de la stack Bluetooth (mémoire, files d'événements internes, etc.)
+
+    ble_hs_cfg.sync_cb = ble_app_on_sync;
+    nimble_port_freertos_init(ble_host_task);
 }
