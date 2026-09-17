@@ -211,7 +211,7 @@ void keypad_task(void *pvParameterS){
 }
 
 
-//========================================== BLE 
+//========================================== BLE ==================================================
 static const char* BLE_TAG = "[ BLE ]:";
 
 void ble_app_on_sync(void){
@@ -223,8 +223,15 @@ void ble_host_task(void *param){
     nimble_port_freertos_deinit();    
 }
 
+#define GATT_SVT_UUID 0x0FFF // UUID du service "SAFETY"
+#define GATT_CHR_CODE_UUID 0xFF01 // UUID de la caractéristique "code entré"
 
-//=========================================== MAIN 
+
+
+
+
+
+//=========================================== MAIN ===================================================
 void app_main(void){
     ESP_ERROR_CHECK(i2c_master_init());
     addressScan();
