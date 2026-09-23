@@ -12,6 +12,9 @@
 #include "nimble/nimble_port.h"  // pour nimble_port_init()
 #include "nimble/nimble_port_freertos.h"  // pour nimble_port_freertos_init() et _deinit()
 #include "host/ble_hs.h"                   // pour ble_hs_cfg
+#include "services/gap/ble_svc_gap.h"    // pour ble_svc_gap_init()
+#include "services/gatt/ble_svc_gatt.h"  // pour ble_svc_gatt_init()
+#include <string.h>
 
 //============================ KEYPAD ZONE =========================================
 
@@ -214,22 +217,96 @@ void keypad_task(void *pvParameterS){
 //========================================== BLE ==================================================
 static const char* BLE_TAG = "[ BLE ]:";
 
+//NOM DE L'APPAREIL ET ADVERTISING
 void ble_app_on_sync(void){
     ESP_LOGI(BLE_TAG,"Stack NimBLE synchronisée, prête à démarrer");
+    ble_svc_gap_device_name_set("ESP32_SECURITY_SYSTEM");
+
+    struct ble_hs_adv_fields fields;
+    memset(&fields,0,sizeof(fields));
+
+    fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
+    fields.name = (uint8_t *)"ESP32_SECURITY_SYSTEM";
+    fields.name_len = strlen("ESP32_SECURITY_SYSTEM");
+    fields.name_is_complete = 1;
+
+    ble_gap_adv_set_fields(&fields);
+
+    struct ble_gap_adv_params adv_params;
+    memset(&adv_params,0,sizeof(adv_params));
+
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+
+    ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC,NULL,BLE_HS_FOREVER,&adv_params,NULL,NULL);
 }
+
 
 void ble_host_task(void *param){
     nimble_port_run(); //   cette fonction de retourne jamais tant que nimble tourne
     nimble_port_freertos_deinit();    
 }
 
-#define GATT_SVT_UUID 0x0FFF // UUID du service "SAFETY"
+#define GATT_SVC_UUID 0x0FFF // UUID du service "SAFETY"
 #define GATT_CHR_CODE_UUID 0xFF01 // UUID de la caractéristique "code entré"
 
+#define BLE_OP_READ 0
+#define BLE_OP_WRITE 1
+
+static int ble_svc_access_cb(uint16_t connect_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg){
+    switch(ctxt->op){
+        case BLE_OP_READ :
+            // LE LIENT DEMANDE À LIRE LA CARACTÉRISTIQUE
+            ESP_LOGI(BLE_TAG,"LECTURE DEMANDÉE PAR LE CLIENT, N°: %d",ctxt->op);
+            break;
+
+        case BLE_OP_WRITE:
+            //LE CLIENT DEMANDE À ECRIRE LA CARACTÉRISTIQUE
+            ESP_LOGI(BLE_TAG,"LE CLIENT DEMANDE À ÉCRIRE LA CARACTÉRISTIQUE, N°: %d",ctxt->op);
+            break;
+
+        default:
+            ESP_LOGI(BLE_TAG,"OPERATION INCUNNUE N°:%d",ctxt->op);
+            break;
+    }
+    return 0;
+};
+
+//STRUCTURE DE LA CARACTÉRISTIQUE 
+static const struct ble_gatt_chr_def gatt_chr_code[] = {
+    {
+        .uuid = BLE_UUID16_DECLARE(GATT_CHR_CODE_UUID), // ON AJOUTE LA CARACTÉRISTIQUE(LA DONNÉE) AU SERVICE( ENSEMBLE DE CARACTÉRISTIQUES)
+        .access_cb = ble_svc_access_cb,
+        .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_WRITE,
+    },
+    {
+        0,// MARQEUR DE FIN DE TABLEAU OBLIGATOIRE
+    }
+};
+
+//STRUCTURE DU SERVICE 
+static const struct ble_gatt_svc_def gatt_svcs[] = {
+    {
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = BLE_UUID16_DECLARE(GATT_SVC_UUID),
+        .characteristics = gatt_chr_code,
+    },
+    {
+        0,
+    }
+};
 
 
+// SERVEUR BLEUTOOTH
+void ble_gatt_svr_init(void){
 
+    ble_svc_gap_init(); // CONTIENT LE NOM DE L'APPAREIL
+    ble_svc_gatt_init(); // CONTIENT LES META-INFOS SUR LES SERVICES DISPONIBLES
 
+    ble_gatts_count_cfg(gatt_svcs); //RESERVATION DES RESSOURCES POUR LE SERVICES gatt_svcs
+    ble_gatts_add_svcs(gatt_svcs); // AJOUT DU SERVICE AU STACK GATT RENDANT LE SERVICE ACCESSIBLE
+
+}
 
 //=========================================== MAIN ===================================================
 void app_main(void){
@@ -268,5 +345,6 @@ void app_main(void){
     nimble_port_init(); // démarre les structures internes de la stack Bluetooth (mémoire, files d'événements internes, etc.)
 
     ble_hs_cfg.sync_cb = ble_app_on_sync;
+    ble_gatt_svr_init();
     nimble_port_freertos_init(ble_host_task);
 }
