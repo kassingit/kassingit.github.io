@@ -99,6 +99,163 @@ char keypad_scan(void){
 }
 
 
+//========================================== BLE ==================================================
+static const char* BLE_TAG = "[ BLE ]:";
+
+#define BLE_MESSAGE_VALUE_MAX 64
+
+static uint8_t ble_message[BLE_MESSAGE_VALUE_MAX] = "ESP-READY !";
+static uint16_t ble_message_len = sizeof("ESP-READY !")-1;
+
+
+//NOM DE L'APPAREIL ET ADVERTISING
+void ble_app_on_sync(void){
+    ESP_LOGI(BLE_TAG,"Stack NimBLE synchronisée, prête à démarrer");
+    ble_svc_gap_device_name_set("ESP32_SECURITY_SYSTEM");
+
+    struct ble_hs_adv_fields fields;
+    memset(&fields,0,sizeof(fields));
+
+    fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
+    fields.name = (uint8_t *)"ESP32_SECURITY_SYSTEM";
+    fields.name_len = strlen("ESP32_SECURITY_SYSTEM");
+    fields.name_is_complete = 1;
+
+    ble_gap_adv_set_fields(&fields);
+
+    struct ble_gap_adv_params adv_params;
+    memset(&adv_params,0,sizeof(adv_params));
+
+    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
+    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
+
+    ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC,NULL,BLE_HS_FOREVER,&adv_params,NULL,NULL);
+}
+
+
+void ble_host_task(void *param){
+    nimble_port_run(); //   cette fonction de retourne jamais tant que nimble tourne
+    nimble_port_freertos_deinit();    
+}
+
+#define GATT_SVC_UUID 0x0FFF // UUID du service "SAFETY"
+#define GATT_CHR_CODE_UUID 0xFF01 // UUID de la caractéristique "code entré"
+
+#define BLE_OP_READ 0
+#define BLE_OP_WRITE 1
+
+static int ble_svc_access_cb(uint16_t connect_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg){
+    int rc;
+    switch(ctxt->op){
+        case BLE_OP_READ :
+            // LE LIENT DEMANDE À LIRE LA CARACTÉRISTIQUE
+            ESP_LOGI(BLE_TAG,"[OPERATION N°: %d => LECTURE DEMANDÉE] -- ENVOIE DU CODE :%s - %d OCTET(S) ENVOYÉ(S)",ctxt->op,ble_message,ble_message_len);
+
+            rc = os_mbuf_append(ctxt->om,ble_message,ble_message_len); //ON AJOUTE A ctxt le message à affichier avec son octet
+            
+            //VERIFICATION SI L'ENVOIE S'EST BIEN PASSÉ
+            if (rc!=0){
+                ESP_LOGI(BLE_TAG,"ERREUR: IMPOSSIBLE D'ENVOYER LE MESSAGE DEMANDÉ PAR LE CLIENT !");
+                return BLE_ATT_ERR_INSUFFICIENT_RES;
+            }
+
+            return 0;
+
+        case BLE_OP_WRITE:
+            
+            ble_message_len = OS_MBUF_PKTLEN(ctxt->om);
+            //LE CLIENT DEMANDE À ECRIRE LA CARACTÉRISTIQUE
+            ESP_LOGI(BLE_TAG,"[OPERATION N°: %d => ECRITURE DEMANDÉE]",ctxt->op);
+
+            if(ble_message_len == 0){
+                ESP_LOGI(BLE_TAG,"ECRITURE REÇUE MAIS SANS AUCUNE DONNÉE !");
+                return 0;
+            }
+
+            if(ble_message_len >BLE_MESSAGE_VALUE_MAX){
+                ESP_LOGI(BLE_TAG,"ECRITURE REÇUE MAIS  DONNÉE TROP LONGUE :%d OCTET(S) ENVOYÉS , MAX : %d OCTECT(S)",ble_message_len,BLE_MESSAGE_VALUE_MAX);
+                return BLE_ATT_ERR_INVALID_ATTR_VALUE_LEN;
+            }
+
+            // SI ON ARRIVE A CE NIVEAU ÇA VEUT DIRE QUE LA DONNÉE ECRITE EST VALIDE  EN TERME DE DIMENSION
+            ble_message[ble_message_len]='\0';
+            rc = ble_hs_mbuf_to_flat(ctxt->om,ble_message,ble_message_len,NULL);
+    
+
+            if (rc != 0){
+                ESP_LOGI(BLE_TAG,"IMPOSSIBLE DE LIRE LA DONNÉE REÇUE ");
+                return BLE_ATT_ERR_UNLIKELY;
+            }
+
+            ESP_LOGI(BLE_TAG,"DONNÉE REÇUÉE :%d OCTET(S)",ble_message_len);
+            ESP_LOG_BUFFER_HEX_LEVEL(BLE_TAG,ble_message,ble_message_len,ESP_LOG_INFO);
+
+
+            //VERIFICATION DE L'ACCORD : 
+            /* 
+            0x54 : T  => CODE VALIDE 
+            0X46 : F => CODE NON VALIDE 
+            */
+            ESP_LOGI(BLE_TAG,"ACCORD :%s",ble_message);
+
+            if(ble_message[0] == 0x54){ // T: TRUE
+                ESP_LOGI(BLE_TAG,"ACCÈS ACCEPTÉ !");
+            }
+            else if(ble_message[0] == 0x46){ // F : FALSE
+                ESP_LOGI(BLE_TAG,"ACCÈS REFUSÉ !");
+            }   
+
+            char RECEIVED_MESSAGE[BLE_MESSAGE_VALUE_MAX+1];
+
+            memcpy(RECEIVED_MESSAGE, ble_message,ble_message_len); //ON COPIE BLE_MESSAGE DANS RECEIVED_MESSAGE
+
+            RECEIVED_MESSAGE[ble_message_len] = '\0';
+
+            return 0;
+
+
+        default:
+            ESP_LOGI(BLE_TAG,"OPERATION INCUNNUE N°:%d",ctxt->op);
+            return BLE_ATT_ERR_UNLIKELY;
+    }
+    return 0;
+};
+
+//STRUCTURE DE LA CARACTÉRISTIQUE 
+static const struct ble_gatt_chr_def gatt_chr_code[] = {
+    {
+        .uuid = BLE_UUID16_DECLARE(GATT_CHR_CODE_UUID), // ON AJOUTE LA CARACTÉRISTIQUE(LA DONNÉE) AU SERVICE( ENSEMBLE DE CARACTÉRISTIQUES)
+        .access_cb = ble_svc_access_cb,
+        .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_WRITE,
+    },
+    {
+        0,// MARQEUR DE FIN DE TABLEAU OBLIGATOIRE
+    }
+};
+
+//STRUCTURE DU SERVICE 
+static const struct ble_gatt_svc_def gatt_svcs[] = {
+    {
+        .type = BLE_GATT_SVC_TYPE_PRIMARY,
+        .uuid = BLE_UUID16_DECLARE(GATT_SVC_UUID),
+        .characteristics = gatt_chr_code,
+    },
+    {
+        0,
+    }
+};
+
+
+// SERVEUR BLEUTOOTH
+void ble_gatt_svr_init(void){
+
+    ble_svc_gap_init(); // CONTIENT LE NOM DE L'APPAREIL
+    ble_svc_gatt_init(); // CONTIENT LES META-INFOS SUR LES SERVICES DISPONIBLES
+
+    ble_gatts_count_cfg(gatt_svcs); //RESERVATION DES RESSOURCES POUR LE SERVICES gatt_svcs
+    ble_gatts_add_svcs(gatt_svcs); // AJOUT DU SERVICE AU STACK GATT RENDANT LE SERVICE ACCESSIBLE
+
+}
 
 
 //==================================== I2C CREATION ================================================
@@ -199,114 +356,32 @@ void lcd_init(void){
 }
 
 
+static int char_index = 0;
+
+
 void keypad_task(void *pvParameterS){
     keymap_gpio_init();
-
     while(1){
         char key = keypad_scan();
         if(key!=0){
             ESP_LOGI(KEYPAD_TAG,"PRESSED TOUCH : %c",key);
-                lcd_send_byte(key, 1); // rs=1 pour les données
-                esp_rom_delay_us(100);
+            lcd_send_byte(key, 1); // rs=1 pour les données
+            esp_rom_delay_us(100);
+
+            if (char_index <=3){
+                ble_message[char_index] = key;
+                ble_message_len = ++char_index;
+            }
+            if(char_index > 3){
+                ble_message[char_index] = '\0';
+                char_index = 0;}
         }
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 
 
-//========================================== BLE ==================================================
-static const char* BLE_TAG = "[ BLE ]:";
 
-//NOM DE L'APPAREIL ET ADVERTISING
-void ble_app_on_sync(void){
-    ESP_LOGI(BLE_TAG,"Stack NimBLE synchronisée, prête à démarrer");
-    ble_svc_gap_device_name_set("ESP32_SECURITY_SYSTEM");
-
-    struct ble_hs_adv_fields fields;
-    memset(&fields,0,sizeof(fields));
-
-    fields.flags = BLE_HS_ADV_F_DISC_GEN | BLE_HS_ADV_F_BREDR_UNSUP;
-    fields.name = (uint8_t *)"ESP32_SECURITY_SYSTEM";
-    fields.name_len = strlen("ESP32_SECURITY_SYSTEM");
-    fields.name_is_complete = 1;
-
-    ble_gap_adv_set_fields(&fields);
-
-    struct ble_gap_adv_params adv_params;
-    memset(&adv_params,0,sizeof(adv_params));
-
-    adv_params.conn_mode = BLE_GAP_CONN_MODE_UND;
-    adv_params.disc_mode = BLE_GAP_DISC_MODE_GEN;
-
-    ble_gap_adv_start(BLE_OWN_ADDR_PUBLIC,NULL,BLE_HS_FOREVER,&adv_params,NULL,NULL);
-}
-
-
-void ble_host_task(void *param){
-    nimble_port_run(); //   cette fonction de retourne jamais tant que nimble tourne
-    nimble_port_freertos_deinit();    
-}
-
-#define GATT_SVC_UUID 0x0FFF // UUID du service "SAFETY"
-#define GATT_CHR_CODE_UUID 0xFF01 // UUID de la caractéristique "code entré"
-
-#define BLE_OP_READ 0
-#define BLE_OP_WRITE 1
-
-static int ble_svc_access_cb(uint16_t connect_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg){
-    switch(ctxt->op){
-        case BLE_OP_READ :
-            // LE LIENT DEMANDE À LIRE LA CARACTÉRISTIQUE
-            ESP_LOGI(BLE_TAG,"LECTURE DEMANDÉE PAR LE CLIENT, N°: %d",ctxt->op);
-            break;
-
-        case BLE_OP_WRITE:
-            //LE CLIENT DEMANDE À ECRIRE LA CARACTÉRISTIQUE
-            ESP_LOGI(BLE_TAG,"LE CLIENT DEMANDE À ÉCRIRE LA CARACTÉRISTIQUE, N°: %d",ctxt->op);
-            break;
-
-        default:
-            ESP_LOGI(BLE_TAG,"OPERATION INCUNNUE N°:%d",ctxt->op);
-            break;
-    }
-    return 0;
-};
-
-//STRUCTURE DE LA CARACTÉRISTIQUE 
-static const struct ble_gatt_chr_def gatt_chr_code[] = {
-    {
-        .uuid = BLE_UUID16_DECLARE(GATT_CHR_CODE_UUID), // ON AJOUTE LA CARACTÉRISTIQUE(LA DONNÉE) AU SERVICE( ENSEMBLE DE CARACTÉRISTIQUES)
-        .access_cb = ble_svc_access_cb,
-        .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_WRITE,
-    },
-    {
-        0,// MARQEUR DE FIN DE TABLEAU OBLIGATOIRE
-    }
-};
-
-//STRUCTURE DU SERVICE 
-static const struct ble_gatt_svc_def gatt_svcs[] = {
-    {
-        .type = BLE_GATT_SVC_TYPE_PRIMARY,
-        .uuid = BLE_UUID16_DECLARE(GATT_SVC_UUID),
-        .characteristics = gatt_chr_code,
-    },
-    {
-        0,
-    }
-};
-
-
-// SERVEUR BLEUTOOTH
-void ble_gatt_svr_init(void){
-
-    ble_svc_gap_init(); // CONTIENT LE NOM DE L'APPAREIL
-    ble_svc_gatt_init(); // CONTIENT LES META-INFOS SUR LES SERVICES DISPONIBLES
-
-    ble_gatts_count_cfg(gatt_svcs); //RESERVATION DES RESSOURCES POUR LE SERVICES gatt_svcs
-    ble_gatts_add_svcs(gatt_svcs); // AJOUT DU SERVICE AU STACK GATT RENDANT LE SERVICE ACCESSIBLE
-
-}
 
 //=========================================== MAIN ===================================================
 void app_main(void){
