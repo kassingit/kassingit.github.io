@@ -230,6 +230,14 @@ void keypad_task(void *pvParameterS){
     }
 }
 
+
+void lcd_affiche_code(void){
+    const char* message = "CODE: ";
+    for (int i = 0; message[i] != '\0'; i++) {
+        lcd_send_byte(message[i], 1); // rs=1 pour les données
+        esp_rom_delay_us(100);
+    }
+}
 //========================================== BLE ==================================================
 static const char* BLE_TAG = "[ BLE ]:";
 
@@ -338,6 +346,13 @@ static int ble_svc_access_cb(uint16_t connect_handle, uint16_t attr_handle, stru
                     esp_rom_delay_us(100);
 
                 }
+
+                vTaskDelay(pdMS_TO_TICKS(5000));
+                lcd_send_byte(0x01, 0); // Clear Display
+                esp_rom_delay_us(200);
+                
+                // REAFFICHAGE DE CODE SUR LA LCD
+                lcd_affiche_code();
             }
 
             else if(ble_message[0] == 0x46){ // F : FALSE
@@ -350,8 +365,13 @@ static int ble_svc_access_cb(uint16_t connect_handle, uint16_t attr_handle, stru
                 for(int i =0; DECISION[i]!='\0'; i++){
                     lcd_send_byte(DECISION[i],1);
                     esp_rom_delay_us(100);
-
                 }
+                vTaskDelay(pdMS_TO_TICKS(5000));
+                lcd_send_byte(0x01, 0); // Clear Display
+                esp_rom_delay_us(200);
+
+                // REAFFICHAGE DE CODE SUR LA LCD
+                lcd_affiche_code();
             }  
 
             //char RECEIVED_MESSAGE[BLE_MESSAGE_VALUE_MAX+1];
@@ -426,11 +446,10 @@ void app_main(void){
 
     esp_rom_delay_us(10000);
 
-    const char* message = "CODE: ";
-    for (int i = 0; message[i] != '\0'; i++) {
-        lcd_send_byte(message[i], 1); // rs=1 pour les données
-        esp_rom_delay_us(100);
-    }
+    // AFFICHAGE DE CODE SUR L'ECRAN
+    lcd_affiche_code();
+    
+    // APPEL DE LA TACHE DE KEY_PAD
     xTaskCreate(keypad_task,"KEYPAD_TASK",2048,NULL,5,NULL);
 
     //========= BLE    
