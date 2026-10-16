@@ -67,6 +67,10 @@ a:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
 .tp-item>summary:focus-visible{outline:3px solid var(--item-color);outline-offset:-3px}
 .tp-item>summary::after{content:"";position:absolute;right:14px;top:50%;width:10px;height:10px;border-right:2px solid var(--item-color);border-bottom:2px solid var(--item-color);transform:translateY(-70%) rotate(45deg);transition:transform .2s ease}
 .tp-item[open]>summary::after{transform:translateY(-30%) rotate(-135deg)}
+.tp-item>summary{pointer-events:none;cursor:default;padding-right:4px}
+.tp-item>summary::after{display:none}
+.tp-item>summary:hover{background:none}
+.tp-body{animation:none}
 .tp-item .tp-title{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:1.05rem;flex:1 1 auto;min-width:200px}
 .tp-item .tp-sub{color:var(--mute);font-size:.82rem;flex:1 1 100%;margin-top:4px}
 @media (min-width:640px){.tp-item .tp-sub{flex:0 0 auto;margin-top:0;text-align:right}}
@@ -610,6 +614,11 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
 </script>
 <script data-goatcounter="https://kassin.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
-</body>
+<script>
+  document.querySelectorAll('details.tp-item').forEach(function(d){
+    d.open = true;
+    d.addEventListener('toggle', function(){ d.open = true; });
+  });
+</script>
 </body>
 </html>
