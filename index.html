@@ -590,10 +590,24 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
     <a class="contact-card" href="https://github.com/kassingit/kassingit.github.io" target="_blank" rel="noopener"><span class="c-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg></span><span class="c-txt"><small>GitHub</small>github.com/kassingit</span></a>
     <a class="contact-card" href="https://www.linkedin.com/in/kelly-kassin-b4621b380" target="_blank" rel="noopener"><span class="c-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v5M8 8v.01M12 16v-5m0 2.5c0-1.4 1-2.5 2.5-2.5S17 12 17 13.5V16"/></svg></span><span class="c-txt"><small>LinkedIn</small>Kelly Kassin</span></a>
   </div>
+    <p class="sub" id="visit-line" style="display:none">
+    Visites du portfolio : <strong id="visit-count"></strong>
+  </p>
+  <script>
+    fetch("https://kassin.goatcounter.com/counter/TOTAL.json")
+      .then(function(r){ return r.json(); })
+      .then(function(d){
+        document.getElementById("visit-count").textContent = d.count;
+        document.getElementById("visit-line").style.display = "";
+      })
+      .catch(function(){});
+  </script>
 </footer>
 </main>
 <script>
 (function(){function o(){var id=location.hash.slice(1);if(!id)return;var e=document.getElementById(id);if(e&&e.tagName==='DETAILS'){e.open=true;e.scrollIntoView();}}window.addEventListener('hashchange',o);o();})();
 </script>
+<script data-goatcounter="https://kassin.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
