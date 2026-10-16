@@ -124,6 +124,13 @@ a:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
 .c-ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .c-txt{min-width:0;overflow-wrap:anywhere;font-weight:500}
 .c-txt small{display:block;font-weight:400;font-size:.78rem;color:var(--mute);letter-spacing:.02em;text-transform:uppercase}
+.gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:14px 0 6px}
+.gallery figure{margin:0}
+.gallery a{display:block}
+.gallery img{display:block;width:100%;height:240px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:var(--card);transition:transform .15s ease,box-shadow .15s ease}
+.gallery a:hover img{transform:translateY(-2px);box-shadow:0 8px 22px rgba(20,33,43,.12)}
+.gallery a:focus-visible{outline:3px solid var(--acc2);outline-offset:2px;border-radius:10px}
+.gallery figcaption{color:var(--mute);font-size:.82rem;margin-top:6px}
 footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
 @media (max-width:640px){.proj{grid-template-columns:1fr}.cat-block{padding-left:14px}.tp-item>summary{padding:14px 36px 14px 2px}.tp-item>summary::after{right:8px}}
 </style>
@@ -200,6 +207,16 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
         <p><strong>Mission :</strong> concevoir et mettre en œuvre un système de reconnaissance de culture et de cueillette de précision dans des contextes agricoles, basé sur un robot de cueillette mobile.</p>
         <ul><li>Navigation autonome du robot, perception et détection d’objets avec ROS2, OpenCV et YOLO, en Python.</li><li>Simulation sous Gazebo, puis déploiement sur le robot réel évoluant dans un milieu avec obstacles.</li><li>Réalisation de la chaîne complète : navigation autonome, reconnaissance des fruits et légumes mûrs et cueillette.</li></ul>
         <p><strong>Résultats :</strong> simulation fonctionnelle de la navigation, puis navigation autonome du robot réel dans un environnement avec obstacles, et chaîne complète de reconnaissance et de cueillette opérationnelle.</p>
+        <div class="gallery">
+        <figure>
+          <a href="images/Photo_robot_hiwonder.jpeg" target="_blank" rel="noopener"><img src="images/Photo_robot_hiwonder.jpeg" alt="Robot mobile Hiwonder" loading="lazy"></a>
+          <figcaption>Le robot mobile</figcaption>
+        </figure>
+        <figure>
+          <a href="images/Dectection_de_couleur_par_hiwonder.jpg" target="_blank" rel="noopener"><img src="images/Dectection_de_couleur_par_hiwonder.jpg" alt="Détection de couleur affichée sur l’écran du robot" loading="lazy"></a>
+          <figcaption>Détection de couleur</figcaption>
+        </figure>
+      </div>
         <span class="tag">Python</span><span class="tag">ROS2</span><span class="tag">OpenCV</span><span class="tag">YOLO</span><span class="tag">Gazebo</span><span class="tag">Systèmes temps réel</span>
           </div>
         </details>
@@ -266,6 +283,20 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
         <p><strong>Mission :</strong> concevoir un contrôle d’accès par code pour la barrière d’un immeuble : le code saisi sur un keypad 4×4 s’affiche en temps réel sur un LCD, puis est transmis en Bluetooth Low Energy à un Raspberry Pi chargé de le vérifier dans une base de données.</p>
         <ul><li>Pilote I2C et LCD HD44780 écrits sans bibliothèque d’écran : API <code>i2c_master</code> d’ESP-IDF, balayage du bus, mode 4 bits via un PCF8574, bascule du signal Enable et séquence d’initialisation gérées à la main.</li><li>Balayage du keypad matriciel dans une tâche FreeRTOS dédiée, avec anti-rebond.</li><li>Serveur GATT BLE (NimBLE) avec service et caractéristique personnalisés.</li></ul>
         <p><strong>Résultats :</strong> la première phase, côté ESP32, est réalisée : le code saisi au keypad s’affiche sur le LCD et peut être lu et écrit depuis un smartphone (nRF Connect). Prochaine étape : mutex sur l’accès au LCD, client BLE et base de données des codes sur le Raspberry Pi. <a href="PROJET_3/docs/rapport_avancement.pdf">Rapport d’avancement (PDF)</a></p>
+        <div class="gallery">
+        <figure>
+          <a href="images/entree_du_code_2A3B.jpg" target="_blank" rel="noopener"><img src="images/entree_du_code_2A3B.jpg" alt="Entrée du code d'accès 2A3B="lazy"></a>
+          <figcaption>Entrée du code d'accès 2A3B (nRF Connect)</figcaption>
+        </figure>
+        <figure>
+          <a href="images/detection_du_BLE_ESP32.png" target="_blank" rel="noopener"><img src="images/detection_du_BLE_ESP32.png" alt="Detection de l'ESP32 par l'application mobile nRF" loading="lazy"></a>
+          <figcaption>Detection de l'ESP32 par l'application mobile nRF Connect</figcaption>
+        </figure>
+        <figure>
+          <a href="images/ble_code_2a3b.png" target="_blank" rel="noopener"><img src="images/ble_code_2a3b.png" alt="Capture de l’application nRF Connect : Reception du code 2A3B entrré envoyé par l'ESP32" loading="lazy"></a>
+          <figcaption>Capture de l’application nRF Connect : Reception du code 2A3B entrré envoyé par l'ESP32</figcaption>
+        </figure>
+      </div>
         <span class="tag">C</span><span class="tag">ESP-IDF</span><span class="tag">FreeRTOS</span><span class="tag">I2C</span><span class="tag">BLE / NimBLE</span><span class="tag">ESP32 WROVER</span><span class="tag">Raspberry Pi</span>
           </div>
         </details>
