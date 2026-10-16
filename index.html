@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portfolio – Logiciel embarqué</title>
+<meta name="description" content="Portfolio d’un élève-ingénieur en électronique et systèmes embarqués : projets en C, FreeRTOS, I2C, BLE, SoC FPGA, ESP32, IA embarquée, sécurité embarquée et traitement du signal.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Portfolio – Logiciel embarqué">
+<meta property="og:description" content="Projets en C embarqué : SoC FPGA, ESP32, FreeRTOS, I2C, BLE, IA embarquée, sécurité embarquée, filtrage numérique.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f3f5f7;--ink:#14212b;--mute:#516170;--line:#cfd7de;--acc:#0b6e75;--acc2:#b9770e;--card:#fff;--c-tp:#d97706;--c-perso:#dc2626;--c-acad:#2563eb;--c-stage:#7c3aed;--c-ia:#0d9488;--c-encours:#db2777;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10181f;--ink:#e6edf2;--mute:#9db0bf;--line:#2a3a47;--acc:#4cc2c9;--acc2:#e3a64b;--card:#16212a;--c-tp:#fbbf24;--c-perso:#f87171;--c-acad:#60a5fa;--c-stage:#a78bfa;--c-ia:#2dd4bf;--c-encours:#f472b6}}
+:root[data-theme="dark"]{--bg:#10181f;--ink:#e6edf2;--mute:#9db0bf;--line:#2a3a47;--acc:#4cc2c9;--acc2:#e3a64b;--card:#16212a;--c-tp:#fbbf24;--c-perso:#f87171;--c-acad:#60a5fa;--c-stage:#a78bfa;--c-ia:#2dd4bf;--c-encours:#f472b6}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:920px;margin:0 auto;padding:0 22px 64px}
+h1,h2,h3{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;line-height:1.2;margin:0}
+h1{font-size:clamp(2rem,6vw,3.2rem)}
+h2{font-size:1.5rem;margin:56px 0 16px;position:relative;padding-bottom:12px}
+h2::after{content:"";position:absolute;left:0;bottom:0;width:52px;height:3px;background:var(--acc);border-radius:2px}
+h3{font-size:1.1rem}
+a{color:var(--acc)}
+a:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
+.hero{padding:56px 0 24px}
+.role{color:var(--mute);margin:10px 0 18px;font-size:1.1rem}
+.lead{max-width:60ch;margin:0 0 22px}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{display:inline-block;padding:9px 16px;border:1.5px solid var(--acc);border-radius:6px;text-decoration:none;font-weight:500}
+.btn.main{background:var(--acc);color:var(--bg)}
+.btns{margin-bottom:22px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;list-style:none;margin:0;padding:0}
+.chips li{font-size:.88rem;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 13px}
+.chips li b{color:var(--acc)}
+.cover{margin:30px 0 10px}
+.cover svg,.cover img{display:block;width:100%;height:auto;border-radius:14px;box-shadow:0 14px 34px rgba(6,32,35,.18)}
+.cover img{aspect-ratio:5/2;object-fit:cover}
+.cap{color:var(--mute);font-size:.85rem;margin:10px 0 0}
+.sub{color:var(--mute);margin:0 0 18px}
+.cat-block{border-left:4px solid var(--cat-color);padding-left:22px;margin:36px 0 0}
+.cat-block:first-of-type{margin-top:8px}
+.cat-tp{--cat-color:var(--c-tp)}.cat-perso{--cat-color:var(--c-perso)}.cat-acad{--cat-color:var(--c-acad)}.cat-stage{--cat-color:var(--c-stage)}.cat-encours{--cat-color:var(--c-encours)}
+.cat{margin:0 0 4px;font-size:1.25rem;display:flex;align-items:center;gap:12px;font-family:"IBM Plex Serif",Georgia,serif}
+.cat::after{content:"";flex:1;height:1px;background:var(--cat-color);opacity:.3}
+.badge{display:inline-block;font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mute);background:var(--card);vertical-align:middle}
+.badge.tp{border-color:var(--item-color,var(--c-tp));color:var(--item-color,var(--c-tp))}
+.badge.acad{border-color:var(--c-acad);color:var(--c-acad)}
+.badge.perso{border-color:var(--c-perso);color:var(--c-perso)}
+.badge.stage{border-color:var(--c-stage);background:var(--c-stage);color:var(--bg)}
+.badge.encours{border-color:var(--c-encours);background:var(--c-encours);color:var(--bg)}
+.proj{display:grid;grid-template-columns:230px 1fr;gap:6px 28px;padding:22px 0;border-top:1px solid var(--line)}
+.proj .meta{color:var(--mute);font-size:.9rem}
+.proj ul{margin:8px 0 0;padding-left:18px}
+.proj li{margin:3px 0}
+.proj strong{font-weight:600}
+.tag{display:inline-block;font-size:.8rem;border:1px solid var(--line);background:var(--card);border-radius:4px;padding:1px 8px;margin:6px 6px 0 0}
+.tp-list{margin-top:8px;border-top:1px solid var(--line)}
+.tp-item{border-bottom:1px solid var(--line);--item-color:var(--subcat-color,var(--c-tp))}
+.tp-item[open]{background:var(--card)}
+.tp-item>summary{list-style:none;cursor:pointer;padding:16px 44px 16px 4px;position:relative;display:flex;align-items:center;gap:14px;flex-wrap:wrap;transition:background .12s ease;border-radius:6px}
+.tp-item>summary::-webkit-details-marker{display:none}
+.tp-item>summary::marker{display:none;content:""}
+.tp-item>summary:hover{background:color-mix(in srgb,var(--item-color) 8%,transparent)}
+.tp-item>summary:focus-visible{outline:3px solid var(--item-color);outline-offset:-3px}
+.tp-item>summary::after{content:"";position:absolute;right:14px;top:50%;width:10px;height:10px;border-right:2px solid var(--item-color);border-bottom:2px solid var(--item-color);transform:translateY(-70%) rotate(45deg);transition:transform .2s ease}
+.tp-item[open]>summary::after{transform:translateY(-30%) rotate(-135deg)}
+.tp-item .tp-title{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:1.05rem;flex:1 1 auto;min-width:200px}
+.tp-item .tp-sub{color:var(--mute);font-size:.82rem;flex:1 1 100%;margin-top:4px}
+@media (min-width:640px){.tp-item .tp-sub{flex:0 0 auto;margin-top:0;text-align:right}}
+.tp-body{padding:0 4px 22px;animation:slideDown .2s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.tp-body p{margin:0 0 10px}
+.tp-body ul{margin:8px 0 10px;padding-left:18px}
+.tp-body li{margin:3px 0}
+.tp-subcat{margin-top:32px}
+.tp-subcat:first-of-type{margin-top:16px}
+.tp-subcat-title{font-family:"IBM Plex Sans",sans-serif;font-size:1rem;font-weight:600;margin:0 0 4px;color:var(--subcat-color,var(--c-tp));display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:2px solid color-mix(in srgb,var(--subcat-color,var(--c-tp)) 35%,transparent);letter-spacing:.01em;text-transform:uppercase}
+.tp-subcat-title::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--subcat-color,var(--c-tp));flex:none}
+.skills{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:8px}
+.skill-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;transition:transform .15s ease,box-shadow .15s ease}
+.skill-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--acc)}
+.skill-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(20,33,43,.08)}
+.skill-card h3{margin:0 0 12px;font-family:"IBM Plex Sans",sans-serif;font-size:.95rem;font-weight:600;letter-spacing:.01em;text-transform:uppercase;color:var(--mute)}
+.skill-pills{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0;padding:0}
+.skill-pills li{font-size:.85rem;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:3px 9px;color:var(--ink);white-space:nowrap}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+@media (max-width:640px){.two-col{grid-template-columns:1fr}}
+.info-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px}
+.info-card h3{margin:0 0 16px;font-family:"IBM Plex Sans",sans-serif;font-size:.95rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--mute);display:flex;align-items:center;gap:10px}
+.info-card h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--acc);flex:none}
+.soft-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.soft-list li{padding-left:26px;position:relative;font-size:.98rem}
+.soft-list li::before{content:"✓";position:absolute;left:0;top:0;width:18px;height:18px;line-height:18px;text-align:center;border-radius:50%;background:var(--bg);border:1px solid var(--line);color:var(--acc);font-weight:700;font-size:.75rem}
+.lang-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px dashed var(--line)}
+.lang-row:last-child{border-bottom:none}
+.lang-row .lang-name{font-weight:500;font-size:.98rem}
+.lang-row .lang-name small{display:block;font-weight:400;font-size:.78rem;color:var(--mute);letter-spacing:.02em;text-transform:uppercase}
+.lang-dots{display:flex;gap:5px;flex:none}
+.lang-dots .d{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.lang-dots .d.on{background:var(--acc)}
+.timeline{position:relative;margin-top:20px;padding-left:28px}
+.timeline::before{content:"";position:absolute;left:7px;top:10px;bottom:10px;width:2px;background:var(--line)}
+.tl-item{position:relative;padding:0 0 28px 0}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{content:"";position:absolute;left:-28px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 3px var(--bg),0 0 0 4px var(--acc)}
+.tl-item .tl-date{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--acc);background:var(--card);border:1px solid var(--line);padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.tl-item h3{margin:0 0 4px;font-size:1.05rem}
+.tl-item p{margin:0;color:var(--mute);font-size:.95rem}
+.interests{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:8px}
+.interest{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;display:flex;gap:14px;align-items:flex-start;transition:transform .15s ease,box-shadow .15s ease}
+.interest:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(20,33,43,.08)}
+.interest .ico{font-size:1.4rem;line-height:1;flex:none}
+.interest h3{margin:0 0 4px;font-family:"IBM Plex Sans",sans-serif;font-size:.95rem;font-weight:600}
+.interest p{margin:0;color:var(--mute);font-size:.88rem}
+.tp-body .meta{color:var(--mute);font-size:.9rem;margin:0 0 10px}
+.contact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:8px}
+.contact-card{display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 20px;text-decoration:none;color:var(--ink);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.contact-card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(20,33,43,.08);border-color:var(--acc)}
+.contact-card:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
+.c-ico{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:color-mix(in srgb,var(--acc) 12%,transparent);color:var(--acc)}
+.c-ico svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.c-txt{min-width:0;overflow-wrap:anywhere;font-weight:500}
+.c-txt small{display:block;font-weight:400;font-size:.78rem;color:var(--mute);letter-spacing:.02em;text-transform:uppercase}
+footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
+@media (max-width:640px){.proj{grid-template-columns:1fr}.cat-block{padding-left:14px}.tp-item>summary{padding:14px 36px 14px 2px}.tp-item>summary::after{right:8px}}
+</style>
+</head>
+<body>
+<main>
+<header class="hero">
+  <h1>Kelly KASSIN</h1>
+  <p class="role">Élève-ingénieur en Électronique &amp; Systèmes Embarqués, Polytech Nice Sophia</p>
+  <p class="lead">Je programme des microcontrôleurs et des SoC en C : interruptions, acquisition par ADC, pilotes de bus (I2C, SPI), communication sans fil (BLE), sécurité matérielle (TPM, Root of Trust), optimisation de la mémoire et mesure des performances. Je m’intéresse également à l’IA embarquée (régression, réseaux de neurones, PyTorch). Je cherche un stage de fin d’études de 6 mois à partir de février 2027, en logiciel embarqué.</p>
+  <div class="btns"><a class="btn main" href="#projets">Voir mes projets</a><a class="btn" href="CV_Kelly_KASSIN.pdf">Télécharger mon CV</a><a class="btn" href="#contact">Me contacter</a></div>
+
+<ul class="chips">
+  <li><b>Langages :</b> C, C++, Python, VHDL</li>
+  <li><b>Cibles :</b> STM32, ESP32, SoC FPGA</li>
+  <li><b>Embarqué :</b> FreeRTOS, I2C, BLE, WiFi</li>
+  <li><b>Bas niveau :</b> interruptions, registres mappés, machines à états, empreinte mémoire</li>
+  <li><b>Validation :</b> debug pas à pas, analyseur logique, testbench</li>
+  <li><b>Outils :</b> Git / GitHub, Vivado / Quartus, ESP-IDF, STM32CubeMX/SMT32CubeIDE, Kicad</li>
+</ul>
+
+  <figure class="cover">
+    <svg viewBox="0 0 1200 480" role="img" aria-labelledby="cvT">
+      <title id="cvT">Carte électronique vue de dessus : un microcontrôleur central entouré de composants passifs, reliés par des pistes de cuivre</title>
+      <defs>
+        <linearGradient id="pcb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#12514f"/><stop offset=".55" stop-color="#0d3f42"/><stop offset="1" stop-color="#07272b"/></linearGradient>
+        <linearGradient id="chip" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#242c33"/><stop offset="1" stop-color="#0b0f13"/></linearGradient>
+        <radialGradient id="halo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#4cc2c9" stop-opacity=".22"/><stop offset="1" stop-color="#4cc2c9" stop-opacity="0"/></radialGradient>
+        <clipPath id="boardClip"><rect x="30" y="20" width="1140" height="440" rx="24"/></clipPath>
+      </defs>
+      <rect x="30" y="20" width="1140" height="440" rx="24" fill="url(#pcb)"/>
+      <g clip-path="url(#boardClip)">
+        <circle cx="600" cy="240" r="330" fill="url(#halo)"/>
+        <g fill="none" stroke="#d9a441" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" opacity=".45"><path d="M478 159H390V110H250"/><path d="M478 177H430V300H300V372"/><path d="M478 195H360V250H215"/><path d="M478 231H412V330H255"/><path d="M478 267H370V395H300"/><path d="M478 303H440V420H360"/><path d="M722 159H830V105H1000"/><path d="M722 177H870V215H1060"/><path d="M722 213H805V330H950V395"/><path d="M722 267H855V290H1010"/><path d="M722 303H900V400H1010"/><path d="M519 118V70H320"/><path d="M573 118V58H470"/><path d="M645 118V88H520V58"/><path d="M519 362V418H330"/><path d="M573 362V440H430"/><path d="M663 362V400H700V440"/></g>
+        <g fill="#d9a441" opacity=".75"><circle cx="250" cy="110" r="5"/><circle cx="300" cy="372" r="5"/><circle cx="1000" cy="105" r="5"/><circle cx="1060" cy="215" r="5"/><circle cx="1010" cy="400" r="5"/><circle cx="320" cy="70" r="5"/><circle cx="470" cy="58" r="5"/><circle cx="330" cy="418" r="5"/><circle cx="700" cy="440" r="5"/><circle cx="1010" cy="290" r="5"/></g>
+        <g fill="#0b2b2e"><circle cx="250" cy="110" r="2"/><circle cx="300" cy="372" r="2"/><circle cx="1000" cy="105" r="2"/><circle cx="1060" cy="215" r="2"/><circle cx="1010" cy="400" r="2"/><circle cx="320" cy="70" r="2"/><circle cx="470" cy="58" r="2"/><circle cx="330" cy="418" r="2"/><circle cx="700" cy="440" r="2"/><circle cx="1010" cy="290" r="2"/></g>
+        <g><path d="M136 179h14M136 193h14M136 207h14M136 221h14" stroke="#b9c2c9" stroke-width="6" stroke-linecap="butt"/><path d="M230 179h14M230 193h14M230 207h14M230 221h14" stroke="#b9c2c9" stroke-width="6" stroke-linecap="butt"/><rect x="150" y="170" width="80" height="60" rx="4" fill="#151a1e" stroke="#2b333a" stroke-width="1.5"/><circle cx="164" cy="184" r="4" fill="#3a444d"/></g>
+        <g><rect x="620" y="52" width="34" height="14" rx="2" fill="#232a30"/><rect x="620" y="52" width="9" height="14" rx="2" fill="#c3cad1"/><rect x="645" y="52" width="9" height="14" rx="2" fill="#c3cad1"/></g>
+        <g><rect x="960" y="140" width="14" height="34" rx="2" fill="#232a30"/><rect x="960" y="140" width="14" height="9" rx="2" fill="#c3cad1"/><rect x="960" y="165" width="14" height="9" rx="2" fill="#c3cad1"/></g>
+        <g><circle cx="240" cy="320" r="14" fill="#161b1f" stroke="#9aa4ac" stroke-width="2"/><path d="M240 306a14 14 0 0 0 0 28z" fill="#c3cad1" opacity=".85"/></g>
+        <g><rect x="940" y="250" width="46" height="26" rx="7" fill="#c3cad1" stroke="#8b949b" stroke-width="1.5"/><rect x="948" y="257" width="30" height="12" rx="3" fill="#9aa4ac"/></g>
+        <g fill="#c3cad1"><rect x="830" y="415" width="14" height="14" rx="2"/><rect x="852" y="415" width="14" height="14" rx="2"/><rect x="874" y="415" width="14" height="14" rx="2"/><rect x="896" y="415" width="14" height="14" rx="2"/><rect x="918" y="415" width="14" height="14" rx="2"/><rect x="940" y="415" width="14" height="14" rx="2"/></g>
+        <g fill="#0b2b2e"><circle cx="837" cy="422" r="3.5"/><circle cx="859" cy="422" r="3.5"/><circle cx="881" cy="422" r="3.5"/><circle cx="903" cy="422" r="3.5"/><circle cx="925" cy="422" r="3.5"/><circle cx="947" cy="422" r="3.5"/></g>
+        <g stroke="#b9c2c9" stroke-width="7" stroke-linecap="butt"><path d="M478 159h22M478 177h22M478 195h22M478 213h22M478 231h22M478 249h22M478 267h22M478 285h22M478 303h22M478 321h22"/><path d="M700 159h22M700 177h22M700 195h22M700 213h22M700 231h22M700 249h22M700 267h22M700 285h22M700 303h22M700 321h22"/><path d="M519 118v22M537 118v22M555 118v22M573 118v22M591 118v22M609 118v22M627 118v22M645 118v22M663 118v22M681 118v22"/><path d="M519 340v22M537 340v22M555 340v22M573 340v22M591 340v22M609 340v22M627 340v22M645 340v22M663 340v22M681 340v22"/></g>
+        <rect x="500" y="140" width="200" height="200" rx="8" fill="url(#chip)" stroke="#39434c" stroke-width="1.5"/>
+        <circle cx="524" cy="164" r="6" fill="#d9a441" opacity=".85"/>
+        <text x="600" y="232" text-anchor="middle" font-size="20" letter-spacing="4" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="#7e909b">CORTEX-A9</text>
+        <text x="600" y="262" text-anchor="middle" font-size="13" letter-spacing="3" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" fill="#5b6c77">SoC FPGA</text>
+        <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="13" fill="#cfe6e8" opacity=".55"><text x="190" y="248">U2</text><text x="622" y="84">R1</text><text x="962" y="192">R2</text><text x="228" y="352">C1</text><text x="944" y="242">Y1</text><text x="830" y="452">J1</text><text x="60" y="448">PCB rev. B</text></g>
+      </g>
+      <g fill="#0a2a2c"><circle cx="80" cy="70" r="16"/><circle cx="1120" cy="70" r="16"/><circle cx="80" cy="410" r="16"/><circle cx="1120" cy="410" r="16"/></g>
+      <g fill="none" stroke="#d9a441" stroke-width="2" opacity=".5"><circle cx="80" cy="70" r="22"/><circle cx="1120" cy="70" r="22"/><circle cx="80" cy="410" r="22"/><circle cx="1120" cy="410" r="22"/></g>
+      <rect x="30" y="20" width="1140" height="440" rx="24" fill="none" stroke="#062023" stroke-width="2"/>
+    </svg>
+    <figcaption class="cap">Vue de dessus d’une carte électronique : au centre un microcontrôleur, autour de lui les composants passifs et les pistes de cuivre qui relient les broches aux capteurs et aux actionneurs.</figcaption>
+  </figure>
+</header>
+
+<section id="projets">
+  <h2>Projets &amp; expériences</h2>
+  <p class="sub">Cinq contextes distincts : projet en cours, expérience professionnelle, projets académiques, projets personnels et travaux pratiques. Cliquez sur un projet ou une expérience pour afficher son contenu.</p>
+
+  <div class="cat-block cat-stage">
+    <h3 class="cat">Expérience professionnelle</h3>
+    <div class="tp-list" style="--subcat-color:var(--c-stage)">
+        <details class="tp-item" id="stage-chine">
+          <summary>
+            <span class="badge stage">Stage</span>
+            <span class="tp-title">Stagiaire en logiciel embarqué</span>
+            <span class="tp-sub">Xidian University, Xi’an · Avril – Août 2026</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">Xidian University, Xi’an, Chine · Avril – Août 2026</p>
+        <p><strong>Mission :</strong> concevoir et mettre en œuvre un système de reconnaissance de culture et de cueillette de précision dans des contextes agricoles, basé sur un robot de cueillette mobile.</p>
+        <ul><li>Navigation autonome du robot, perception et détection d’objets avec ROS2, OpenCV et YOLO, en Python.</li><li>Simulation sous Gazebo, puis déploiement sur le robot réel évoluant dans un milieu avec obstacles.</li><li>Réalisation de la chaîne complète : navigation autonome, reconnaissance des fruits et légumes mûrs et cueillette.</li></ul>
+        <p><strong>Résultats :</strong> simulation fonctionnelle de la navigation, puis navigation autonome du robot réel dans un environnement avec obstacles, et chaîne complète de reconnaissance et de cueillette opérationnelle.</p>
+        <span class="tag">Python</span><span class="tag">ROS2</span><span class="tag">OpenCV</span><span class="tag">YOLO</span><span class="tag">Gazebo</span><span class="tag">Systèmes temps réel</span>
+          </div>
+        </details>
+    </div>
+  </div>
+
+  <div class="cat-block cat-acad">
+    <h3 class="cat">Projets académiques</h3>
+    <div class="tp-list" style="--subcat-color:var(--c-acad)">
+        <details class="tp-item">
+          <summary>
+            <span class="badge acad">Académique</span>
+            <span class="tp-title">Filtrage numérique du signal — MATLAB</span>
+            <span class="tp-sub">MATLAB · Binôme avec Y. Ommi, ELSE 4A</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">Binôme avec Y. Ommi, ELSE 4A · Projet de traitement du signal</p>
+        <p><strong>Mission :</strong> débruiter un signal audio par un filtre passe-bas, en concevant et en comparant cinq familles de filtres numériques à partir des spécifications de gabarit (fp = 2 500 Hz, fsb = 4 000 Hz, Gpbmax = 40 dB, Gpbmin = 37 dB, Gsbmax = −55 dB), puis traiter un signal vocal enregistré par un filtre passe-bas idéal.</p>
+        <ul><li>Calcul des tolérances δ, ε et des gains K<sub>IIR</sub> / K<sub>FIR</sub> à partir des gains en dB, puis détermination de l’ordre et du type de chaque filtre.</li><li><strong>Chebyshev I</strong> (n = 11) et <strong>Chebyshev II</strong> (n = 11) : comparaison des oscillations en bande passante (type I) vs en bande d’arrêt (type II).</li><li><strong>Elliptique</strong> (n = 8) : ordre le plus faible des IIR pour un gabarit donné — le plus favorable du problème.</li><li><strong>Kaiser</strong> (FIR, n = 176) et <strong>Parks-McClellan</strong> (FIR, n = 75) : synthèse par fenêtrage et par méthode d’égalisation des ondulations, comparaison du retard de groupe et de la réponse impulsionnelle.</li><li>Pour chaque filtre : tracé du gain en dB et linéaire, phase, retard de groupe, diagramme pôles-zéros, réponse impulsionnelle, filtrage du signal bruité et écoute comparée.</li><li><strong>Acquisition et traitement de la parole :</strong> enregistrement d’un signal vocal (Fs = 8 kHz, 5 s), ajout de bruit gaussien dans le domaine fréquentiel pour préserver l’information, puis filtrage par un filtre passe-bas idéal centré sur 0 Hz et reconstruction par transformée de Fourier inverse.</li></ul>
+        <p><strong>Résultats :</strong> le filtre elliptique offre le meilleur compromis (ordre le plus bas pour un gabarit identique) ; côté FIR, Parks-McClellan obtient le même gabarit avec un ordre bien plus faible que Kaiser. Le filtre passe-bas idéal appliqué dans le domaine fréquentiel permet de reconstruire le signal vocal en supprimant l’intégralité des composantes hors bande.</p>
+        <span class="tag">MATLAB</span><span class="tag">Chebyshev I / II</span><span class="tag">Elliptique</span><span class="tag">Kaiser</span><span class="tag">Parks-McClellan</span><span class="tag">IIR / FIR</span><span class="tag">FFT / IFFT</span><span class="tag">Traitement du signal</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge acad">Académique</span>
+            <span class="tp-title">Transmission IRDA asynchrone en VHDL</span>
+            <span class="tp-sub">MAX10 · Quartus · ModelSim</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">MAX10, Quartus, ModelSim · Conception sur FPGA</p>
+        <p><strong>Mission :</strong> concevoir la couche physique d’une liaison IRDA en infrarouge — modulateur et démodulateur PPM (<em>Pulse Position Modulation</em>) pour la transmission série asynchrone de caractères (1 start, 8 data, parité paire, 2 stop) — puis assembler et tester la chaîne complète en boucle.</p>
+        <ul><li><strong>Modulateur PPM :</strong> machine d’états ASM (T0/T1), compteurs T (16 cycles par bit, horloge 10 MHz) et I (bits du caractère), génération d’une impulsion de 3/16 de TB quand le bit transmis vaut ‘0’ (<code>TxdIR = carrier AND NOT Txd</code>).</li><li><strong>Démodulateur PPM :</strong> détection du front de start, mesure de la durée du signal sur 16 cycles d’horloge, comparaison du compteur C pour décider la valeur du bit reçu.</li><li><strong>Assemblage structurel</strong> modulateur + démodulateur et testbench VHDL émettant ‘A’ (0x41) puis ‘B’ (0x42) à 10 MHz.</li><li><strong>Synthèse et placement-routage Quartus sur MAX10 :</strong> 28 éléments logiques, 12 registres, 98 mW ; contraintes SDC (horloge 10 MHz, faux chemins sur entrées/sorties asynchrones).</li></ul>
+        <span class="tag">VHDL</span><span class="tag">ASM</span><span class="tag">PPM</span><span class="tag">IRDA</span><span class="tag">ModelSim</span><span class="tag">Quartus</span><span class="tag">MAX10</span><span class="tag">SDC</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge acad">Académique</span>
+            <span class="tp-title">Application avec interface homme-machine — Jeu du pendu</span>
+            <span class="tp-sub">C · Libsx</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">Langage C, bibliothèque Libsx · Projet académique</p>
+        <p><strong>Mission :</strong> concevoir une application avec une interface graphique permettant de jouer au « jeu du pendu ».</p>
+        <p><strong>Résultats :</strong> un jeu fonctionnel avec une interface utilisateur graphique permettant de jouer en entrant les lettres depuis le clavier, de changer de dictionnaire de mots (français ou anglais) et de régler le niveau de difficulté.</p>
+        <span class="tag">C</span><span class="tag">Libsx</span><span class="tag">IHM</span>
+          </div>
+        </details>
+    </div>
+  </div>
+
+  <div class="cat-block cat-perso">
+    <h3 class="cat">Projets personnels</h3>
+    <div class="tp-list" style="--subcat-color:var(--c-perso)">
+        <details class="tp-item">
+          <summary>
+            <span class="badge perso">Personnel</span>
+            <span class="tp-title">Système de sécurité par code d’accès : ESP32 et Raspberry Pi en BLE</span>
+            <span class="tp-sub">C · ESP-IDF · FreeRTOS · Phase 1 terminée</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">C, ESP-IDF 6.1, FreeRTOS · Projet personnel, phase 1 terminée – <a href="https://github.com/kassingit">GitHub</a></p>
+        <p><strong>Mission :</strong> concevoir un contrôle d’accès par code pour la barrière d’un immeuble : le code saisi sur un keypad 4×4 s’affiche en temps réel sur un LCD, puis est transmis en Bluetooth Low Energy à un Raspberry Pi chargé de le vérifier dans une base de données.</p>
+        <ul><li>Pilote I2C et LCD HD44780 écrits sans bibliothèque d’écran : API <code>i2c_master</code> d’ESP-IDF, balayage du bus, mode 4 bits via un PCF8574, bascule du signal Enable et séquence d’initialisation gérées à la main.</li><li>Balayage du keypad matriciel dans une tâche FreeRTOS dédiée, avec anti-rebond.</li><li>Serveur GATT BLE (NimBLE) avec service et caractéristique personnalisés.</li></ul>
+        <p><strong>Résultats :</strong> la première phase, côté ESP32, est réalisée : le code saisi au keypad s’affiche sur le LCD et peut être lu et écrit depuis un smartphone (nRF Connect). Prochaine étape : mutex sur l’accès au LCD, client BLE et base de données des codes sur le Raspberry Pi. <a href="PROJET_3/docs/rapport_avancement.pdf">Rapport d’avancement (PDF)</a></p>
+        <span class="tag">C</span><span class="tag">ESP-IDF</span><span class="tag">FreeRTOS</span><span class="tag">I2C</span><span class="tag">BLE / NimBLE</span><span class="tag">ESP32 WROVER</span><span class="tag">Raspberry Pi</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge perso">Personnel</span>
+            <span class="tp-title">Firmware &amp; application de surveillance vidéo sans fil sur ESP32</span>
+            <span class="tp-sub">C++ · PlatformIO · GTK4</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">C++, PlatformIO, GTK4 · Projet personnel – <a href="#">GitHub</a></p>
+        <p><strong>Mission :</strong> développer un firmware sur un microcontrôleur FREENOVE ESP32 WROVER pour piloter l’acquisition vidéo, la configuration bas niveau des périphériques (GPIO, PSRAM) et la transmission des flux vidéo via un serveur HTTP embarqué en WiFi, vers une application de surveillance développée en parallèle en C++, avec traitement multithread et intégration d’un modèle de détection d’objets (YOLO/ONNX).</p>
+        <p><strong>Résultats :</strong> le microcontrôleur envoie les vidéos à l’application, qui les affiche en réalisant la détection d’objets et le dénombrement de personnes dans l’environnement filmé.</p>
+        <span class="tag">C++</span><span class="tag">ESP32 WROVER</span><span class="tag">PlatformIO</span><span class="tag">GTK4</span><span class="tag">WiFi / HTTP</span><span class="tag">ONNX Runtime</span><span class="tag">FFmpeg</span><span class="tag">YOLO</span>
+          </div>
+        </details>
+    </div>
+  </div>
+
+  <div class="cat-block cat-encours">
+    <h3 class="cat">Projet en cours</h3>
+    <div class="tp-list" style="--subcat-color:var(--c-encours)">
+        <details class="tp-item">
+          <summary>
+            <span class="badge encours">En cours</span>
+            <span class="tp-title">Communication chiffrée Infra-Rouge (IR) avec racine de confiance matérielle (TPM)</span>
+            <span class="tp-sub">STM32 Nucleo · Projet de 5<sup>e</sup> année · En cours</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">STM32 Nucleo, C · Projet de 5<sup>e</sup> année — Polytech Nice Sophia · En cours</p>
+        <p><strong>Mission :</strong> concevoir <em>from scratch</em> un composant assurant une communication chiffrée en infrarouge selon le protocole NEC, avec un microcontrôleur STM32 Nucleo maître. L’architecture intègre un module TPM (<code>ST33TPHF2XI2C</code>) faisant office de coffre-fort matériel pour la gestion des clés, ainsi que des interfaces I2C, SPI, un port de debug SWD et un port UART.</p>
+        <ul><li><strong>Communication infrarouge NEC :</strong> implémentation complète de la modulation et démodulation NEC (porteuse 38 kHz, encodage des bits par durée d’impulsion), en vue d’une transmission série chiffrée entre deux nœuds embarqués.</li><li><strong>Racine de confiance matérielle :</strong> intégration d’un TPM ST33TPHF2XI2C via I2C, gestion des clés et des opérations cryptographiques dans un coffre-fort matériel — notions de <em>Root of Trust</em> et de stockage sécurisé de secrets.</li><li><strong>Conception bas niveau :</strong> configuration des périphériques du STM32 (I2C, SPI, UART, SWD), mise au point du port de debug SWD pour la programmation et l’inspection en cours d’exécution.</li><li><strong>Chaîne complète :</strong> chiffrement des données applicatives, transmission IR, réception et vérification d’intégrité côté récepteur — mise en évidence des contraintes temps réel d’une liaison sans fil sécurisée.</li></ul>
+        <p><strong>Objectif :</strong> maîtriser la chaîne complète d’une communication embarquée sécurisée — depuis la racine de confiance matérielle jusqu’au protocole applicatif — en lien direct avec les enjeux du Secure Boot et de la cryptographie appliquée sur microcontrôleurs ARM.</p>
+        <span class="tag">C</span><span class="tag">STM32 Nucleo</span><span class="tag">TPM (ST33TPHF2XI2C)</span><span class="tag">Root of Trust</span><span class="tag">I2C</span><span class="tag">SPI</span><span class="tag">UART</span><span class="tag">SWD</span><span class="tag">IR / NEC</span><span class="tag">Cryptographie embarquée</span>
+          </div>
+        </details>
+    </div>
+  </div>
+
+  <div class="cat-block cat-tp">
+    <h3 class="cat">Travaux pratiques</h3>
+    <p class="sub">Cliquez sur un TP pour afficher son contenu. Les TP sont regroupés par matière.</p>
+
+    <div class="tp-subcat" style="--subcat-color:var(--c-ia)">
+      <h4 class="tp-subcat-title">IA Embarquée</h4>
+      <div class="tp-list">
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Fondements du ML &amp; régression linéaire</span>
+            <span class="tp-sub">Python · NumPy · scikit-learn</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> comprendre le pipeline complet d’entraînement supervisé — jeu d’entraînement, jeu de test, généralisation — et implémenter de zéro la régression linéaire avec descente de gradient en NumPy.</p>
+            <ul><li><strong>Régression linéaire from scratch :</strong> modèle à un paramètre <code>ŷ = w·x</code> puis modèle complet <code>ŷ = w·x + b</code>, calcul du gradient par rapport à <code>w</code> et <code>b</code>, mise à jour itérative par descente de gradient (η = 0,005).</li><li><strong>Métriques :</strong> implémentation de RMSE (<em>Root Mean Square Error</em>) et MAE (<em>Mean Absolute Error</em>), comparaison des erreurs train / test.</li><li><strong>Démonstration d’overfitting :</strong> ajustement de polynômes de degré croissant sur un jeu réduit, mise en évidence de la divergence entre erreur d’entraînement (↓) et erreur de test (↑) — illustration du compromis biais-variance.</li></ul>
+            <span class="tag">Python</span><span class="tag">NumPy</span><span class="tag">scikit-learn</span><span class="tag">Descente de gradient</span><span class="tag">RMSE / MAE</span><span class="tag">Biais-variance</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Neurone artificiel, régression logistique &amp; MLP</span>
+            <span class="tp-sub">PyTorch · MNIST · Breast Cancer</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> partir du neurone unique pour arriver à un réseau multi-couches entraîné par rétropropagation, évaluer rigoureusement les modèles de classification sur données réelles et déséquilibrées, puis basculer vers PyTorch.</p>
+            <ul><li><strong>Neurone artificiel &amp; régression logistique :</strong> implémentation des fonctions d’activation (Sigmoid, Tanh, ReLU), forward pass, perte BCE (<em>Binary Cross-Entropy</em>), gradients <code>dz = ŷ − y</code>, mise à jour des poids. Application au jeu <em>Breast Cancer</em> (30 features, malignant vs benign).</li><li><strong>Évaluation :</strong> calcul manuel de la matrice de confusion (TP, TN, FP, FN), puis <em>Accuracy</em>, <em>Precision</em>, <em>Recall</em> — interprétation critique du compromis rappel / précision sur un problème médical.</li><li><strong>XOR bruité dense (2 000 points) :</strong> mise en évidence qu’un neurone unique échoue (précision ≈ 51 % — une seule droite ne peut séparer 4 quadrants) ; implémentation d’un MLP <code>[2 → 4 → 1]</code> entièrement manuel (forward et backward en NumPy, initialisation Xavier, backpropagation par règle de chaîne) qui atteint ≈ 99 % de précision.</li><li><strong>Passage à PyTorch &amp; MNIST :</strong> MLP profond (<em>flatten</em> → FC 128 → ReLU → Dropout 0,2 → FC 10), entraînement par <code>CrossEntropyLoss</code> et <code>Adam</code>, suivi des courbes de perte et d’exactitude (train / val), évaluation finale sur le jeu de test et matrice de confusion multi-classes (10 chiffres, ~98 % de précision).</li></ul>
+            <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">NumPy</span><span class="tag">Rétropropagation</span><span class="tag">BCE / Cross-Entropy</span><span class="tag">Matrice de confusion</span><span class="tag">Precision / Recall</span><span class="tag">MNIST</span>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="tp-subcat" style="--subcat-color:var(--c-acad)">
+      <h4 class="tp-subcat-title">Conception SoC FPGA</h4>
+      <div class="tp-list">
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Passage piéton sur SoC FPGA</span>
+            <span class="tp-sub">ARM Cortex-A9 bicœur · DE10-Standard</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> application temps réel en C baremetal qui gère un feu tricolore et un témoin piéton, en deux modes : jour et nuit.</p>
+            <ul><li>Machine à états (variable énumérée, sorties de Mealy) pilotée par interruptions : timer0, boutons PIO, configuration du CPU et du GIC.</li><li>Lecture d’un ADC (voie 0, registre mappé en mémoire) pour basculer entre jour et nuit, avec une hystérésis sur deux seuils pour éviter les changements d’état instables.</li></ul>
+            <span class="tag">C</span><span class="tag">ADC</span><span class="tag">GIC</span><span class="tag">Interruptions</span><span class="tag">Monitor Program</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Signalisateur de chantier sur Nios II</span>
+            <span class="tp-sub">Quartus · Platform Designer</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> rampe de LED à vitesse réglable (100 à 900 ms), affichée sur 7 segments, avec drivers HAL et accès directs aux registres.</p>
+            <ul><li>Tâche périodique avec <code>alt_alarm_start()</code>, routine d’interruption des boutons avec <code>alt_ic_isr_register()</code>.</li><li>Empreinte réduite : programme limité à 20 Ko, BSP allégé, taille des sections mesurée avec <code>nios2-elf-size</code>.</li></ul>
+            <span class="tag">Nios II</span><span class="tag">HAL</span><span class="tag">Empreinte mémoire</span><span class="tag">C</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Moteur pas à pas sur FPGA</span>
+            <span class="tp-sub">VHDL · Qsys · SignalTap</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> périphérique Avalon sur mesure — séquenceur (machine de Moore, modes mono et biphasé) et diviseur de fréquence réglable sur 6 bits à partir de l’horloge de 50 MHz.</p>
+            <p><strong>Résultats :</strong> simulation avec un testbench, puis validation à l’analyseur logique.</p>
+            <span class="tag">VHDL</span><span class="tag">Avalon</span><span class="tag">SignalTap</span>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="tp-subcat" style="--subcat-color:var(--c-stage)">
+      <h4 class="tp-subcat-title">Architectures des processeurs</h4>
+      <div class="tp-list">
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Évaluation des performances d’une architecture sur ARM Cortex-A9</span>
+            <span class="tp-sub">Vivado / Vitis · Zedboard (Xilinx)</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> évaluer les performances d’une architecture logicielle avec mémoires caches (L1 et L2), comparer une opération de copie selon les mémoires DDR et BRAM, et analyser les transactions du bus AXI 4.0.</p>
+            <p><strong>Résultats :</strong> les caches accélèrent l’exécution d’un programme ; l’exécution d’une instruction est plus rapide sur la DDR que sur la BRAM. Pour améliorer une architecture logicielle, il est nécessaire d’inclure les caches.</p>
+            <span class="tag">Caches L1/L2</span><span class="tag">DDR / BRAM</span><span class="tag">AXI4</span><span class="tag">Vitis</span><span class="tag">Zedboard</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge tp">TP</span>
+            <span class="tp-title">Développement de code avancé sur Zedboard</span>
+            <span class="tp-sub">Linux embarqué · cross-compilation</span>
+          </summary>
+          <div class="tp-body">
+            <p><strong>Mission :</strong> programmer et exécuter des applications en espace utilisateur et en espace noyau sur une plateforme embarquée, en manipulant les ressources matérielles et en développant des modules Linux.</p>
+            <p><strong>Résultats :</strong> exécution, après cross-compilation, d’un code C sur la carte embarquée en espace utilisateur et en espace noyau.</p>
+            <span class="tag">Linux embarqué</span><span class="tag">C</span><span class="tag">Cross-compilation</span><span class="tag">Vivado/Vitis</span><span class="tag">minicom</span>
+          </div>
+        </details>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Compétences</h2>
+  <div class="skills">
+    <div class="skill-card">
+      <h3>Langages</h3>
+      <ul class="skill-pills">
+        <li>Python</li>
+        <li>C</li>
+        <li>C++</li>
+        <li>VHDL</li>
+        <li>MATLAB</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Microcontrôleurs</h3>
+      <ul class="skill-pills">
+        <li>STM32</li>
+        <li>ESP32</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Protocoles &amp; communication</h3>
+      <ul class="skill-pills">
+        <li>I2C (pilote protocole)</li>
+        <li>SPI</li>
+        <li>UART</li>
+        <li>BLE (GATT, NimBLE)</li>
+        <li>WiFi / HTTP</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Sécurité embarquée</h3>
+      <ul class="skill-pills">
+        <li>TPM (ST33TPHF2XI2C)</li>
+        <li>Root of Trust</li>
+        <li>Cryptographie appliquée</li>
+        <li>SWD / debug bas niveau</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>FPGA &amp; SoC</h3>
+      <ul class="skill-pills">
+        <li>Zedboard (Zynq-7000)</li>
+        <li>Altera DE2</li>
+        <li>DE10-Lite</li>
+        <li>MAX10</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Temps réel &amp; navigation</h3>
+      <ul class="skill-pills">
+        <li>ROS</li>
+        <li>FreeRTOS (tâches, ordonnancement)</li>
+        <li>RTOS (en cours, fin janvier 2027)</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Nano-ordinateurs</h3>
+      <ul class="skill-pills">
+        <li>Raspberry Pi</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Vision &amp; IA embarquée</h3>
+      <ul class="skill-pills">
+        <li>OpenCV</li>
+        <li>YOLO / ONNX</li>
+        <li>Régression linéaire / logistique</li>
+        <li>MLP (PyTorch, NumPy)</li>
+        <li>Métriques (précision, rappel)</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Traitement du signal</h3>
+      <ul class="skill-pills">
+        <li>Filtres IIR / FIR</li>
+        <li>Chebyshev, Elliptique</li>
+        <li>Kaiser, Parks-McClellan</li>
+        <li>FFT / analyse spectrale</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Systèmes</h3>
+      <ul class="skill-pills">
+        <li>Linux embarqué</li>
+        <li>Linux</li>
+        <li>Windows</li>
+      </ul>
+    </div>
+    <div class="skill-card">
+      <h3>Outils &amp; logiciels</h3>
+      <ul class="skill-pills">
+        <li>Vivado / Vitis</li>
+        <li>Quartus / ModelSim</li>
+        <li>Keil Vision</li>
+        <li>STM32CubeMX</li>
+        <li>ESP-IDF</li>
+        <li>PlatformIO</li>
+        <li>PyTorch</li>
+        <li>scikit-learn</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Soft skills &amp; langues</h2>
+  <div class="two-col">
+    <div class="info-card">
+      <h3><span class="dot"></span> Soft skills</h3>
+      <ul class="soft-list"><li>Esprit analytique</li><li>Curiosité technique</li><li>Rigueur et méthodologie</li></ul>
+    </div>
+    <div class="info-card">
+      <h3><span class="dot"></span> Langues</h3>
+      <div class="lang-row"><span class="lang-name">Français<small>Langue maternelle</small></span><span class="lang-dots" aria-label="Niveau : langue maternelle"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d on"></span></span></div>
+      <div class="lang-row"><span class="lang-name">Anglais<small>Niveau B1</small></span><span class="lang-dots" aria-label="Niveau : B1"><span class="d on"></span><span class="d on"></span><span class="d on"></span><span class="d"></span><span class="d"></span></span></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Parcours</h2>
+  <div class="timeline">
+    <div class="tl-item"><span class="tl-date">Avril – Août 2026</span><h3>Stage en logiciel embarqué, Xidian University (Xi’an, Chine)</h3><p>Navigation autonome et cueillette de précision sur robot mobile. <a href="#stage-chine">Voir le détail</a>.</p></div>
+    <div class="tl-item"><span class="tl-date">2024 – 2027</span><h3>Diplôme d’ingénieur, Polytech Nice Sophia</h3><p>Électronique &amp; Systèmes Embarqués : SoC FPGA, systèmes à microprocesseurs, Linux embarqué, temps réel, C/C++, IA embarquée, sécurité embarquée.</p></div>
+    <div class="tl-item"><span class="tl-date">2022 – 2024</span><h3>Classes préparatoires MP, ESTEM (Maroc)</h3><p>Filière mathématiques–physique, préparation aux concours d’entrée aux écoles d’ingénieurs.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Centres d’intérêt</h2>
+  <div class="interests">
+    <div class="interest"><span class="ico" aria-hidden="true">🔧</span><div><h3>Bricolage électronique</h3><p>Réalisation de circuits à partir de composants récupérés et de projets personnels.</p></div></div>
+    <div class="interest"><span class="ico" aria-hidden="true">🏀</span><div><h3>Sport d’équipe</h3><p>Basketball.</p></div></div>
+    <div class="interest"><span class="ico" aria-hidden="true">📚</span><div><h3>Lecture</h3><p>Culture scientifique et technique.</p></div></div>
+  </div>
+</section>
+
+<footer id="contact">
+  <h2 style="margin-top:0">Contact</h2>
+  <p class="sub">Disponible pour un stage de fin d’études de 6 mois à partir de février 2027.</p>
+  <div class="contact-grid">
+    <a class="contact-card" href="mailto:kassinkelly87@gmail.com"><span class="c-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span><span class="c-txt"><small>E-mail</small>kassinkelly87@gmail.com</span></a>
+    <a class="contact-card" href="tel:+33759887758"><span class="c-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg></span><span class="c-txt"><small>Téléphone</small>+33 7 59 88 77 58</span></a>
+    <a class="contact-card" href="https://github.com/kassingit/kassingit.github.io" target="_blank" rel="noopener"><span class="c-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14"/></svg></span><span class="c-txt"><small>GitHub</small>github.com/kassingit</span></a>
+    <a class="contact-card" href="https://www.linkedin.com/in/kelly-kassin-b4621b380" target="_blank" rel="noopener"><span class="c-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 11v5M8 8v.01M12 16v-5m0 2.5c0-1.4 1-2.5 2.5-2.5S17 12 17 13.5V16"/></svg></span><span class="c-txt"><small>LinkedIn</small>Kelly Kassin</span></a>
+  </div>
+</footer>
+</main>
+<script>
+(function(){function o(){var id=location.hash.slice(1);if(!id)return;var e=document.getElementById(id);if(e&&e.tagName==='DETAILS'){e.open=true;e.scrollIntoView();}}window.addEventListener('hashchange',o);o();})();
+</script>
+</body>
+</html>
