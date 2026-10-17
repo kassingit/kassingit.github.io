@@ -207,7 +207,40 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
 <section id="projets">
   <h2>Projets &amp; expériences</h2>
   <p class="sub">Cinq contextes distincts : projet en cours, expérience professionnelle, projets académiques, projets personnels et travaux pratiques. Cliquez sur un projet ou une expérience pour afficher son contenu.</p>
-
+  <div class="cat-block cat-encours">
+    <h3 class="cat">Projet en cours</h3>
+    <div class="tp-list" style="--subcat-color:var(--c-encours)">
+        <details class="tp-item">
+          <summary>
+            <span class="badge encours">En cours</span>
+            <span class="tp-title">Communication chiffrée Infra-Rouge (IR) avec racine de confiance matérielle (TPM)</span>
+            <span class="tp-sub">STM32 Nucleo · Projet de 5<sup>e</sup> année · En cours</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">STM32 Nucleo, C · Projet de 5<sup>e</sup> année — Polytech Nice Sophia · En cours</p>
+        <p><strong>Mission :</strong> concevoir <em>from scratch</em> un composant assurant une communication chiffrée en infrarouge selon le protocole NEC, avec un microcontrôleur STM32 Nucleo maître. L’architecture intègre un module TPM (<code>ST33TPHF2XI2C</code>) faisant office de coffre-fort matériel pour la gestion des clés, ainsi que des interfaces I2C, SPI, un port de debug SWD et un port UART.</p>
+        <ul><li><strong>Communication infrarouge NEC :</strong> implémentation complète de la modulation et démodulation NEC (porteuse 38 kHz, encodage des bits par durée d’impulsion), en vue d’une transmission série chiffrée entre deux nœuds embarqués.</li><li><strong>Racine de confiance matérielle :</strong> intégration d’un TPM ST33TPHF2XI2C via I2C, gestion des clés et des opérations cryptographiques dans un coffre-fort matériel — notions de <em>Root of Trust</em> et de stockage sécurisé de secrets.</li><li><strong>Conception bas niveau :</strong> configuration des périphériques du STM32 (I2C, SPI, UART, SWD), mise au point du port de debug SWD pour la programmation et l’inspection en cours d’exécution.</li><li><strong>Chaîne complète :</strong> chiffrement des données applicatives, transmission IR, réception et vérification d’intégrité côté récepteur — mise en évidence des contraintes temps réel d’une liaison sans fil sécurisée.</li></ul>
+        <p><strong>Objectif :</strong> maîtriser la chaîne complète d’une communication embarquée sécurisée — depuis la racine de confiance matérielle jusqu’au protocole applicatif — en lien direct avec les enjeux du Secure Boot et de la cryptographie appliquée sur microcontrôleurs ARM.</p>
+        <span class="tag">C</span><span class="tag">STM32 Nucleo</span><span class="tag">TPM (ST33TPHF2XI2C)</span><span class="tag">Root of Trust</span><span class="tag">I2C</span><span class="tag">SPI</span><span class="tag">UART</span><span class="tag">SWD</span><span class="tag">IR / NEC</span><span class="tag">Cryptographie embarquée</span>
+        
+        <div class="gallery">
+        <figure>
+          <a href="Images/HW_design_IR_Project0.png" target="_blank" rel="noopener"><img src="Images/HW_design_IR_Project0.png" alt="Architecture Hardware du composant="lazy"></a>
+          <figcaption>Architecture Hardware du composant</figcaption>
+        </figure>
+        <figure>
+          <a href="Images/Schematic1.png" target="_blank" rel="noopener"><img src="Images/Schematic1.png" alt="Détection de couleur affichée sur l’écran du robot" loading="lazy"></a>
+          <figcaption>Début de Schematique</figcaption>
+        </figure>
+        <figure>
+          <a href="Images/PCB1.png" target="_blank" rel="noopener"><img src="Images/PCB1.png" alt="Réalisation PCB" loading="lazy"></a>
+          <figcaption>Réalisation PCB</figcaption>
+        </figure>
+        </div>
+      </div>
+        </details>
+    </div>
+  </div>
   <div class="cat-block cat-stage">
     <h3 class="cat">Expérience professionnelle</h3>
     <div class="tp-list" style="--subcat-color:var(--c-stage)">
@@ -238,52 +271,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
     </div>
   </div>
 
-  <div class="cat-block cat-acad">
-    <h3 class="cat">Projets académiques</h3>
-    <div class="tp-list" style="--subcat-color:var(--c-acad)">
-        <details class="tp-item">
-          <summary>
-            <span class="badge acad">Académique</span>
-            <span class="tp-title">Filtrage numérique du signal — MATLAB</span>
-            <span class="tp-sub">MATLAB · Binôme avec Y. Ommi, ELSE 4A</span>
-          </summary>
-          <div class="tp-body">
-            <p class="meta">Binôme avec Y. Ommi, ELSE 4A · Projet de traitement du signal</p>
-        <p><strong>Mission :</strong> débruiter un signal audio par un filtre passe-bas, en concevant et en comparant cinq familles de filtres numériques à partir des spécifications de gabarit (fp = 2 500 Hz, fsb = 4 000 Hz, Gpbmax = 40 dB, Gpbmin = 37 dB, Gsbmax = −55 dB), puis traiter un signal vocal enregistré par un filtre passe-bas idéal.</p>
-        <ul><li>Calcul des tolérances δ, ε et des gains K<sub>IIR</sub> / K<sub>FIR</sub> à partir des gains en dB, puis détermination de l’ordre et du type de chaque filtre.</li><li><strong>Chebyshev I</strong> (n = 11) et <strong>Chebyshev II</strong> (n = 11) : comparaison des oscillations en bande passante (type I) vs en bande d’arrêt (type II).</li><li><strong>Elliptique</strong> (n = 8) : ordre le plus faible des IIR pour un gabarit donné — le plus favorable du problème.</li><li><strong>Kaiser</strong> (FIR, n = 176) et <strong>Parks-McClellan</strong> (FIR, n = 75) : synthèse par fenêtrage et par méthode d’égalisation des ondulations, comparaison du retard de groupe et de la réponse impulsionnelle.</li><li>Pour chaque filtre : tracé du gain en dB et linéaire, phase, retard de groupe, diagramme pôles-zéros, réponse impulsionnelle, filtrage du signal bruité et écoute comparée.</li><li><strong>Acquisition et traitement de la parole :</strong> enregistrement d’un signal vocal (Fs = 8 kHz, 5 s), ajout de bruit gaussien dans le domaine fréquentiel pour préserver l’information, puis filtrage par un filtre passe-bas idéal centré sur 0 Hz et reconstruction par transformée de Fourier inverse.</li></ul>
-        <p><strong>Résultats :</strong> le filtre elliptique offre le meilleur compromis (ordre le plus bas pour un gabarit identique) ; côté FIR, Parks-McClellan obtient le même gabarit avec un ordre bien plus faible que Kaiser. Le filtre passe-bas idéal appliqué dans le domaine fréquentiel permet de reconstruire le signal vocal en supprimant l’intégralité des composantes hors bande.</p>
-        <span class="tag">MATLAB</span><span class="tag">Chebyshev I / II</span><span class="tag">Elliptique</span><span class="tag">Kaiser</span><span class="tag">Parks-McClellan</span><span class="tag">IIR / FIR</span><span class="tag">FFT / IFFT</span><span class="tag">Traitement du signal</span>
-          </div>
-        </details>
-        <details class="tp-item">
-          <summary>
-            <span class="badge acad">Académique</span>
-            <span class="tp-title">Transmission IRDA asynchrone en VHDL</span>
-            <span class="tp-sub">MAX10 · Quartus · ModelSim</span>
-          </summary>
-          <div class="tp-body">
-            <p class="meta">MAX10, Quartus, ModelSim · Conception sur FPGA</p>
-        <p><strong>Mission :</strong> concevoir la couche physique d’une liaison IRDA en infrarouge — modulateur et démodulateur PPM (<em>Pulse Position Modulation</em>) pour la transmission série asynchrone de caractères (1 start, 8 data, parité paire, 2 stop) — puis assembler et tester la chaîne complète en boucle.</p>
-        <ul><li><strong>Modulateur PPM :</strong> machine d’états ASM (T0/T1), compteurs T (16 cycles par bit, horloge 10 MHz) et I (bits du caractère), génération d’une impulsion de 3/16 de TB quand le bit transmis vaut ‘0’ (<code>TxdIR = carrier AND NOT Txd</code>).</li><li><strong>Démodulateur PPM :</strong> détection du front de start, mesure de la durée du signal sur 16 cycles d’horloge, comparaison du compteur C pour décider la valeur du bit reçu.</li><li><strong>Assemblage structurel</strong> modulateur + démodulateur et testbench VHDL émettant ‘A’ (0x41) puis ‘B’ (0x42) à 10 MHz.</li><li><strong>Synthèse et placement-routage Quartus sur MAX10 :</strong> 28 éléments logiques, 12 registres, 98 mW ; contraintes SDC (horloge 10 MHz, faux chemins sur entrées/sorties asynchrones).</li></ul>
-        <span class="tag">VHDL</span><span class="tag">ASM</span><span class="tag">PPM</span><span class="tag">IRDA</span><span class="tag">ModelSim</span><span class="tag">Quartus</span><span class="tag">MAX10</span><span class="tag">SDC</span>
-          </div>
-        </details>
-        <details class="tp-item">
-          <summary>
-            <span class="badge acad">Académique</span>
-            <span class="tp-title">Application avec interface homme-machine — Jeu du pendu</span>
-            <span class="tp-sub">C · Libsx</span>
-          </summary>
-          <div class="tp-body">
-            <p class="meta">Langage C, bibliothèque Libsx · Projet académique</p>
-        <p><strong>Mission :</strong> concevoir une application avec une interface graphique permettant de jouer au « jeu du pendu ».</p>
-        <p><strong>Résultats :</strong> un jeu fonctionnel avec une interface utilisateur graphique permettant de jouer en entrant les lettres depuis le clavier, de changer de dictionnaire de mots (français ou anglais) et de régler le niveau de difficulté.</p>
-        <span class="tag">C</span><span class="tag">Libsx</span><span class="tag">IHM</span>
-          </div>
-        </details>
-    </div>
-  </div>
-
+  
   <div class="cat-block cat-perso">
     <h3 class="cat">Projets personnels</h3>
     <div class="tp-list" style="--subcat-color:var(--c-perso)">
@@ -330,40 +318,49 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
         </details>
     </div>
   </div>
-
-  <div class="cat-block cat-encours">
-    <h3 class="cat">Projet en cours</h3>
-    <div class="tp-list" style="--subcat-color:var(--c-encours)">
+  
+  <div class="cat-block cat-acad">
+    <h3 class="cat">Projets académiques</h3>
+    <div class="tp-list" style="--subcat-color:var(--c-acad)">
         <details class="tp-item">
           <summary>
-            <span class="badge encours">En cours</span>
-            <span class="tp-title">Communication chiffrée Infra-Rouge (IR) avec racine de confiance matérielle (TPM)</span>
-            <span class="tp-sub">STM32 Nucleo · Projet de 5<sup>e</sup> année · En cours</span>
+            <span class="badge acad">Académique</span>
+            <span class="tp-title">Filtrage numérique du signal — MATLAB</span>
+            <span class="tp-sub">MATLAB · Binôme avec Y. Ommi, ELSE 4A</span>
           </summary>
           <div class="tp-body">
-            <p class="meta">STM32 Nucleo, C · Projet de 5<sup>e</sup> année — Polytech Nice Sophia · En cours</p>
-        <p><strong>Mission :</strong> concevoir <em>from scratch</em> un composant assurant une communication chiffrée en infrarouge selon le protocole NEC, avec un microcontrôleur STM32 Nucleo maître. L’architecture intègre un module TPM (<code>ST33TPHF2XI2C</code>) faisant office de coffre-fort matériel pour la gestion des clés, ainsi que des interfaces I2C, SPI, un port de debug SWD et un port UART.</p>
-        <ul><li><strong>Communication infrarouge NEC :</strong> implémentation complète de la modulation et démodulation NEC (porteuse 38 kHz, encodage des bits par durée d’impulsion), en vue d’une transmission série chiffrée entre deux nœuds embarqués.</li><li><strong>Racine de confiance matérielle :</strong> intégration d’un TPM ST33TPHF2XI2C via I2C, gestion des clés et des opérations cryptographiques dans un coffre-fort matériel — notions de <em>Root of Trust</em> et de stockage sécurisé de secrets.</li><li><strong>Conception bas niveau :</strong> configuration des périphériques du STM32 (I2C, SPI, UART, SWD), mise au point du port de debug SWD pour la programmation et l’inspection en cours d’exécution.</li><li><strong>Chaîne complète :</strong> chiffrement des données applicatives, transmission IR, réception et vérification d’intégrité côté récepteur — mise en évidence des contraintes temps réel d’une liaison sans fil sécurisée.</li></ul>
-        <p><strong>Objectif :</strong> maîtriser la chaîne complète d’une communication embarquée sécurisée — depuis la racine de confiance matérielle jusqu’au protocole applicatif — en lien direct avec les enjeux du Secure Boot et de la cryptographie appliquée sur microcontrôleurs ARM.</p>
-        <span class="tag">C</span><span class="tag">STM32 Nucleo</span><span class="tag">TPM (ST33TPHF2XI2C)</span><span class="tag">Root of Trust</span><span class="tag">I2C</span><span class="tag">SPI</span><span class="tag">UART</span><span class="tag">SWD</span><span class="tag">IR / NEC</span><span class="tag">Cryptographie embarquée</span>
-        
-        <div class="gallery">
-        <figure>
-          <a href="Images/HW_design_IR_Project0.png" target="_blank" rel="noopener"><img src="Images/HW_design_IR_Project0.png" alt="Architecture Hardware du composant="lazy"></a>
-          <figcaption>Architecture Hardware du composant</figcaption>
-        </figure>
-        <figure>
-          <a href="Images/Schematic1.png" target="_blank" rel="noopener"><img src="Images/Schematic1.png" alt="Détection de couleur affichée sur l’écran du robot" loading="lazy"></a>
-          <figcaption>Début de Schematique</figcaption>
-        </figure>
-        <figure>
-          <a href="Images/PCB1.png" target="_blank" rel="noopener"><img src="Images/PCB1.png" alt="Réalisation PCB" loading="lazy"></a>
-          <figcaption>Réalisation PCB</figcaption>
-        </figure>
-        </div>
-      </div>
-
-
+            <p class="meta">Binôme avec Y. Ommi, ELSE 4A · Projet de traitement du signal</p>
+        <p><strong>Mission :</strong> débruiter un signal audio par un filtre passe-bas, en concevant et en comparant cinq familles de filtres numériques à partir des spécifications de gabarit (fp = 2 500 Hz, fsb = 4 000 Hz, Gpbmax = 40 dB, Gpbmin = 37 dB, Gsbmax = −55 dB), puis traiter un signal vocal enregistré par un filtre passe-bas idéal.</p>
+        <ul><li>Calcul des tolérances δ, ε et des gains K<sub>IIR</sub> / K<sub>FIR</sub> à partir des gains en dB, puis détermination de l’ordre et du type de chaque filtre.</li><li><strong>Chebyshev I</strong> (n = 11) et <strong>Chebyshev II</strong> (n = 11) : comparaison des oscillations en bande passante (type I) vs en bande d’arrêt (type II).</li><li><strong>Elliptique</strong> (n = 8) : ordre le plus faible des IIR pour un gabarit donné — le plus favorable du problème.</li><li><strong>Kaiser</strong> (FIR, n = 176) et <strong>Parks-McClellan</strong> (FIR, n = 75) : synthèse par fenêtrage et par méthode d’égalisation des ondulations, comparaison du retard de groupe et de la réponse impulsionnelle.</li><li>Pour chaque filtre : tracé du gain en dB et linéaire, phase, retard de groupe, diagramme pôles-zéros, réponse impulsionnelle, filtrage du signal bruité et écoute comparée.</li><li><strong>Acquisition et traitement de la parole :</strong> enregistrement d’un signal vocal (Fs = 8 kHz, 5 s), ajout de bruit gaussien dans le domaine fréquentiel pour préserver l’information, puis filtrage par un filtre passe-bas idéal centré sur 0 Hz et reconstruction par transformée de Fourier inverse.</li></ul>
+        <p><strong>Résultats :</strong> le filtre elliptique offre le meilleur compromis (ordre le plus bas pour un gabarit identique) ; côté FIR, Parks-McClellan obtient le même gabarit avec un ordre bien plus faible que Kaiser. Le filtre passe-bas idéal appliqué dans le domaine fréquentiel permet de reconstruire le signal vocal en supprimant l’intégralité des composantes hors bande.</p>
+        <span class="tag">MATLAB</span><span class="tag">Chebyshev I / II</span><span class="tag">Elliptique</span><span class="tag">Kaiser</span><span class="tag">Parks-McClellan</span><span class="tag">IIR / FIR</span><span class="tag">FFT / IFFT</span><span class="tag">Traitement du signal</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge acad">Académique</span>
+            <span class="tp-title">Transmission IRDA asynchrone en VHDL</span>
+            <span class="tp-sub">MAX10 · Quartus · ModelSim</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">MAX10, Quartus, ModelSim · Conception sur FPGA</p>
+        <p><strong>Mission :</strong> concevoir la couche physique d’une liaison IRDA en infrarouge — modulateur et démodulateur PPM (<em>Pulse Position Modulation</em>) pour la transmission série asynchrone de caractères (1 start, 8 data, parité paire, 2 stop) — puis assembler et tester la chaîne complète en boucle.</p>
+        <ul><li><strong>Modulateur PPM :</strong> machine d’états ASM (T0/T1), compteurs T (16 cycles par bit, horloge 10 MHz) et I (bits du caractère), génération d’une impulsion de 3/16 de TB quand le bit transmis vaut ‘0’ (<code>TxdIR = carrier AND NOT Txd</code>).</li><li><strong>Démodulateur PPM :</strong> détection du front de start, mesure de la durée du signal sur 16 cycles d’horloge, comparaison du compteur C pour décider la valeur du bit reçu.</li><li><strong>Assemblage structurel</strong> modulateur + démodulateur et testbench VHDL émettant ‘A’ (0x41) puis ‘B’ (0x42) à 10 MHz.</li><li><strong>Synthèse et placement-routage Quartus sur MAX10 :</strong> 28 éléments logiques, 12 registres, 98 mW ; contraintes SDC (horloge 10 MHz, faux chemins sur entrées/sorties asynchrones).</li></ul>
+        <span class="tag">VHDL</span><span class="tag">ASM</span><span class="tag">PPM</span><span class="tag">IRDA</span><span class="tag">ModelSim</span><span class="tag">Quartus</span><span class="tag">MAX10</span><span class="tag">SDC</span>
+          </div>
+        </details>
+        <details class="tp-item">
+          <summary>
+            <span class="badge acad">Académique</span>
+            <span class="tp-title">Application avec interface homme-machine — Jeu du pendu</span>
+            <span class="tp-sub">C · Libsx</span>
+          </summary>
+          <div class="tp-body">
+            <p class="meta">Langage C, bibliothèque Libsx · Projet académique</p>
+        <p><strong>Mission :</strong> concevoir une application avec une interface graphique permettant de jouer au « jeu du pendu ».</p>
+        <p><strong>Résultats :</strong> un jeu fonctionnel avec une interface utilisateur graphique permettant de jouer en entrant les lettres depuis le clavier, de changer de dictionnaire de mots (français ou anglais) et de régler le niveau de difficulté.</p>
+        <span class="tag">C</span><span class="tag">Libsx</span><span class="tag">IHM</span>
+          </div>
         </details>
     </div>
   </div>
