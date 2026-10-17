@@ -67,9 +67,20 @@ a:focus-visible{outline:3px solid var(--acc2);outline-offset:2px}
 .tp-item>summary:focus-visible{outline:3px solid var(--item-color);outline-offset:-3px}
 .tp-item>summary::after{content:"";position:absolute;right:14px;top:50%;width:10px;height:10px;border-right:2px solid var(--item-color);border-bottom:2px solid var(--item-color);transform:translateY(-70%) rotate(45deg);transition:transform .2s ease}
 .tp-item[open]>summary::after{transform:translateY(-30%) rotate(-135deg)}
-.tp-item>summary{pointer-events:none;cursor:default;padding-right:4px}
-.tp-item>summary::after{display:none}
-.tp-item>summary:hover{background:none}
+.cat-stage .tp-item>summary,
+.cat-acad  .tp-item>summary,
+.cat-perso .tp-item>summary,
+.cat-encours .tp-item>summary{pointer-events:none;cursor:default;padding-right:4px}
+
+.cat-stage .tp-item>summary::after,
+.cat-acad  .tp-item>summary::after,
+.cat-perso .tp-item>summary::after,
+.cat-encours .tp-item>summary::after{display:none}
+
+.cat-stage .tp-item>summary:hover,
+.cat-acad  .tp-item>summary:hover,
+.cat-perso .tp-item>summary:hover,
+.cat-encours .tp-item>summary:hover{background:none}
 .tp-body{animation:none}
 .tp-item .tp-title{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:1.05rem;flex:1 1 auto;min-width:200px}
 .tp-item .tp-sub{color:var(--mute);font-size:.82rem;flex:1 1 100%;margin-top:4px}
@@ -342,8 +353,12 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
           <figcaption>Architecture Hardware du composant</figcaption>
         </figure>
         <figure>
-          <a href="Images/HW_design_IR_Project.png" target="_blank" rel="noopener"><img src="Images/HW_design_IR_Project.png" alt="Détection de couleur affichée sur l’écran du robot" loading="lazy"></a>
-          <figcaption>Organisation du Projet: Methode FAST</figcaption>
+          <a href="Images/Schematic1.png" target="_blank" rel="noopener"><img src="Images/Schematic1.png" alt="Détection de couleur affichée sur l’écran du robot" loading="lazy"></a>
+          <figcaption>Début de Schematique</figcaption>
+        </figure>
+        <figure>
+          <a href="Images/PCB1.png" target="_blank" rel="noopener"><img src="Images/PCB1.png" alt="Réalisation PCB" loading="lazy"></a>
+          <figcaption>Réalisation PCB</figcaption>
         </figure>
         </div>
       </div>
@@ -363,7 +378,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
         <details class="tp-item">
           <summary>
             <span class="badge tp">TP</span>
-            <span class="tp-title">Fondements du ML &amp; régression linéaire</span>
+            <span class="tp-title">Fondements du ML &; régression linéaire</span>
             <span class="tp-sub">Python · NumPy · scikit-learn</span>
           </summary>
           <div class="tp-body">
@@ -375,12 +390,12 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
         <details class="tp-item">
           <summary>
             <span class="badge tp">TP</span>
-            <span class="tp-title">Neurone artificiel, régression logistique &amp; MLP</span>
+            <span class="tp-title">Neurone artificiel, régression logistique &; MLP</span>
             <span class="tp-sub">PyTorch · MNIST · Breast Cancer</span>
           </summary>
           <div class="tp-body">
             <p><strong>Mission :</strong> partir du neurone unique pour arriver à un réseau multi-couches entraîné par rétropropagation, évaluer rigoureusement les modèles de classification sur données réelles et déséquilibrées, puis basculer vers PyTorch.</p>
-            <ul><li><strong>Neurone artificiel &amp; régression logistique :</strong> implémentation des fonctions d’activation (Sigmoid, Tanh, ReLU), forward pass, perte BCE (<em>Binary Cross-Entropy</em>), gradients <code>dz = ŷ − y</code>, mise à jour des poids. Application au jeu <em>Breast Cancer</em> (30 features, malignant vs benign).</li><li><strong>Évaluation :</strong> calcul manuel de la matrice de confusion (TP, TN, FP, FN), puis <em>Accuracy</em>, <em>Precision</em>, <em>Recall</em> — interprétation critique du compromis rappel / précision sur un problème médical.</li><li><strong>XOR bruité dense (2 000 points) :</strong> mise en évidence qu’un neurone unique échoue (précision ≈ 51 % — une seule droite ne peut séparer 4 quadrants) ; implémentation d’un MLP <code>[2 → 4 → 1]</code> entièrement manuel (forward et backward en NumPy, initialisation Xavier, backpropagation par règle de chaîne) qui atteint ≈ 99 % de précision.</li><li><strong>Passage à PyTorch &amp; MNIST :</strong> MLP profond (<em>flatten</em> → FC 128 → ReLU → Dropout 0,2 → FC 10), entraînement par <code>CrossEntropyLoss</code> et <code>Adam</code>, suivi des courbes de perte et d’exactitude (train / val), évaluation finale sur le jeu de test et matrice de confusion multi-classes (10 chiffres, ~98 % de précision).</li></ul>
+            <ul><li><strong>Neurone artificiel ; régression logistique :</strong> implémentation des fonctions d’activation (Sigmoid, Tanh, ReLU), forward pass, perte BCE (<em>Binary Cross-Entropy</em>), gradients <code>dz = ŷ − y</code>, mise à jour des poids. Application au jeu <em>Breast Cancer</em> (30 features, malignant vs benign).</li><li><strong>Évaluation :</strong> calcul manuel de la matrice de confusion (TP, TN, FP, FN), puis <em>Accuracy</em>, <em>Precision</em>, <em>Recall</em> — interprétation critique du compromis rappel / précision sur un problème médical.</li><li><strong>XOR bruité dense (2 000 points) :</strong> mise en évidence qu’un neurone unique échoue (précision ≈ 51 % — une seule droite ne peut séparer 4 quadrants) ; implémentation d’un MLP <code>[2 → 4 → 1]</code> entièrement manuel (forward et backward en NumPy, initialisation Xavier, backpropagation par règle de chaîne) qui atteint ≈ 99 % de précision.</li><li><strong>Passage à PyTorch &amp; MNIST :</strong> MLP profond (<em>flatten</em> → FC 128 → ReLU → Dropout 0,2 → FC 10), entraînement par <code>CrossEntropyLoss</code> et <code>Adam</code>, suivi des courbes de perte et d’exactitude (train / val), évaluation finale sur le jeu de test et matrice de confusion multi-classes (10 chiffres, ~98 % de précision).</li></ul>
             <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">NumPy</span><span class="tag">Rétropropagation</span><span class="tag">BCE / Cross-Entropy</span><span class="tag">Matrice de confusion</span><span class="tag">Precision / Recall</span><span class="tag">MNIST</span>
           </div>
         </details>
@@ -500,7 +515,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
       </ul>
     </div>
     <div class="skill-card">
-      <h3>FPGA &amp; SoC</h3>
+      <h3>FPGA & SoC</h3>
       <ul class="skill-pills">
         <li>Zedboard (Zynq-7000)</li>
         <li>Altera DE2</li>
@@ -509,7 +524,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
       </ul>
     </div>
     <div class="skill-card">
-      <h3>Temps réel &amp; navigation</h3>
+      <h3>Temps réel & navigation</h3>
       <ul class="skill-pills">
         <li>ROS</li>
         <li>FreeRTOS (tâches, ordonnancement)</li>
@@ -523,7 +538,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
       </ul>
     </div>
     <div class="skill-card">
-      <h3>Vision &amp; IA embarquée</h3>
+      <h3>Vision & IA embarquée</h3>
       <ul class="skill-pills">
         <li>OpenCV</li>
         <li>YOLO / ONNX</li>
@@ -550,7 +565,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
       </ul>
     </div>
     <div class="skill-card">
-      <h3>Outils &amp; logiciels</h3>
+      <h3>Outils & logiciels</h3>
       <ul class="skill-pills">
         <li>Vivado / Vitis</li>
         <li>Quartus / ModelSim</li>
@@ -566,7 +581,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
 </section>
 
 <section>
-  <h2>Soft skills &amp; langues</h2>
+  <h2>Soft skills & langues</h2>
   <div class="two-col">
     <div class="info-card">
       <h3><span class="dot"></span> Soft skills</h3>
@@ -584,7 +599,7 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
   <h2>Parcours</h2>
   <div class="timeline">
     <div class="tl-item"><span class="tl-date">Avril – Août 2026</span><h3>Stage en logiciel embarqué, Xidian University (Xi’an, Chine)</h3><p>Navigation autonome et cueillette de précision sur robot mobile. <a href="#stage-chine">Voir le détail</a>.</p></div>
-    <div class="tl-item"><span class="tl-date">2024 – 2027</span><h3>Diplôme d’ingénieur, Polytech Nice Sophia</h3><p>Électronique &amp; Systèmes Embarqués : SoC FPGA, systèmes à microprocesseurs, Linux embarqué, temps réel, C/C++, IA embarquée, sécurité embarquée.</p></div>
+    <div class="tl-item"><span class="tl-date">2024 – 2027</span><h3>Diplôme d’ingénieur, Polytech Nice Sophia</h3><p>Électronique & Systèmes Embarqués : SoC FPGA, systèmes à microprocesseurs, Linux embarqué, temps réel, C/C++, IA embarquée, sécurité embarquée.</p></div>
     <div class="tl-item"><span class="tl-date">2022 – 2024</span><h3>Classes préparatoires MP, ESTEM (Maroc)</h3><p>Filière mathématiques–physique, préparation aux concours d’entrée aux écoles d’ingénieurs.</p></div>
   </div>
 </section>
@@ -615,7 +630,9 @@ footer{border-top:1px solid var(--line);margin-top:56px;padding-top:24px}
 <script data-goatcounter="https://kassin.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
 <script>
-  document.querySelectorAll('details.tp-item').forEach(function(d){
+  document.querySelectorAll(
+    '.cat-stage details.tp-item, .cat-acad details.tp-item, .cat-perso details.tp-item, .cat-encours details.tp-item'
+  ).forEach(function(d){
     d.open = true;
     d.addEventListener('toggle', function(){ d.open = true; });
   });
