@@ -1,1 +1,37 @@
-~$*
+
+# Fichiers compilés en C et C++
+*.o
+*.obj
+*.exe
+*.out
+*.dll
+*.so
+*.a
+
+# Dossiers de compilation
+build/
+cmake-build-*/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# IDE
+.vscode/
+.idea/
+
+# Fichiers temporaires
+*.log
+*.tmp
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Système
+.DS_Store
+Thumbs.db
+
